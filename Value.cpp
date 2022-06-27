@@ -3,8 +3,7 @@
 using namespace Combat;
 
 Value::Value(const Source &source, float base)
-        : source { source }
-        , base { base }
+        : source { source }, base { base }
 {
 }
 

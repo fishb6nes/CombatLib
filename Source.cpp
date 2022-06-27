@@ -2,9 +2,8 @@
 
 using namespace Combat;
 
-Source::Source(std::string &&name, int id)
-        : name { std::make_shared<const std::string>(name) }
-        , id { id }
+Source::Source(const std::string &&name, int id)
+        : name { std::make_shared<const std::string>(name) }, id { id }
 {
 }
 
