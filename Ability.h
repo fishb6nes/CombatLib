@@ -8,11 +8,6 @@
 
 namespace Combat::Ability
 {
-    class Base
-    {
-
-    };
-
     class Configuration
     {
 
@@ -25,14 +20,18 @@ namespace Combat::Ability
         const std::map<int, std::vector<Modifier<Entity>>> modifiers;
     };
 
-    template<class Entity, class Location>
-    class Targeted : public Base
+    template<class Entity>
+    class Base
     {
-    public:
         virtual bool OnHit(Entity entity) = 0;
 
         virtual bool OnMiss(Entity entity) = 0;
+    };
 
+    template<class Entity, class Location>
+    class Targeted : public Base<Entity>
+    {
+    public:
         virtual bool OnObstacle(Location location) { return false; };
 
     public:
@@ -48,13 +47,9 @@ namespace Combat::Ability
     };
 
     template<class Entity, class Location>
-    class Targetless : public Base
+    class Targetless : public Base<Entity>
     {
     public:
-        virtual bool OnHit(Entity entity) = 0;
-
-        virtual bool OnMiss(Entity entity) = 0;
-
         virtual bool OnGrounded(Location location) { return true; };
 
         virtual bool OnMaxRange(Location location) { return true; };
@@ -70,12 +65,12 @@ namespace Combat::Ability
     class Child
     {
     public:
-        template<class Entity, class Parent, class Data>
+        template<class Entity, class ParentAbility, class ChildData>
         class Factory
         {
         public:
             virtual std::unique_ptr<Child> Create(
-                    const Parent &parent, Snapshot<Entity> snapshot, Data data) = 0;
+                    const ParentAbility &parent, Snapshot<Entity> snapshot, ChildData data) = 0;
         };
     };
 }
