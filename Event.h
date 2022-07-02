@@ -6,96 +6,85 @@
 
 #include "Modifier.h"
 
-namespace Combat
+namespace Combat::Event
 {
-    namespace Event
+    template<class Entity, class Config>
+    struct PreBase
     {
-        template<class Event, class Attribute>
-        static void AddModifierTo(Attribute attribute, Modifier modifier, Event event)
-        {
-            auto it = event.modifiers.find(attribute);
-            if (it == event.modifiers.end())
-            {
-                std::vector<Modifier> v { };
-                v.push_back(modifier);
-                event.modifiers[attribute] = v;
-            }
-            else
-            {
-                it->second.push_back(modifier);
-            }
-        }
+        bool isCancelled = false;
+        bool isExplicitlyAllowed = false;
+        std::map<Config, std::vector<Modifier<Entity>>> modifiers { };
 
-        template<class Entity, class Attribute>
-        struct AbilityPreCast
-        {
-            std::string *ability;
-            Entity *caster;
-            std::map<Attribute, std::vector<Modifier>> *modifiers;
+        bool IsAllowed();
 
-            bool isCancelled;
-            bool isExplicitlyAllowed;
-        };
+        void AddModifier(Config config, Modifier<Entity> modifier);
+    };
 
-        template<class Entity, class Attribute>
-        struct AbilityCast
-        {
-            std::string *const ability;
-            Entity *const caster;
-        };
+    template<class Entity, class Config>
+    struct AbilityPreCast : public PreBase<Entity, Config>
+    {
+        const std::string &ability;
+        const Entity &caster;
+    };
 
-        template<class Entity, class Attribute>
-        struct AbilityPreHit
-        {
-            std::string *const ability;
-            Entity *const caster;
-            Entity *const target;
-        };
+    template<class Entity>
+    struct AbilityCast
+    {
+        const std::string &ability;
+        const Entity &caster;
+    };
 
-        template<class Entity>
-        struct AbilityHit
-        {
-            const std::string &ability;
-            const Entity &caster;
-            const Entity &target;
-        };
+    template<class Entity, class Config>
+    struct AbilityPreHit : PreBase<Entity, Config>
+    {
+        const std::string &ability;
+        const Entity &caster;
+        const Entity &target;
+    };
 
-        template<class Entity>
-        struct AbilityMiss
-        {
-            const std::string &ability;
-            const Entity &caster;
-            const Entity &target;
-        };
+    template<class Entity>
+    struct AbilityHit
+    {
+        const std::string &ability;
+        const Entity &caster;
+        const Entity &target;
+    };
 
-        template<class Entity, class Attribute>
-        class Handler
-        {
-        public:
-            virtual void ApplyEvent(AbilityPreCast<Entity, Attribute> &event) { }
+    template<class Entity>
+    struct AbilityMiss
+    {
+        const std::string &ability;
+        const Entity &caster;
+        const Entity &target;
+    };
 
-            virtual void ApplyEvent(const AbilityCast<Entity, Attribute> &event) { }
+    template<class Entity, class Config>
+    class Handler
+    {
+    public:
+        virtual void ApplyEvent(AbilityPreCast<Entity, Config> &event) { }
 
-            virtual void ApplyEvent(AbilityPreHit<Entity, Attribute> &event) { }
+        virtual void ApplyEvent(const AbilityCast<Entity> &event) { }
 
-            virtual void ApplyEvent(const AbilityHit<Entity> &event) { }
+        virtual void ApplyEvent(AbilityPreHit<Entity, Config> &event) { }
 
-            virtual void ApplyEvent(const AbilityMiss<Entity> &event) { }
-        };
+        virtual void ApplyEvent(const AbilityHit<Entity> &event) { }
 
-        template<class Entity, class Attribute>
-        class Bus
-        {
-        private:
-            std::vector<const Handler<Entity, Attribute> *> handlers { };
+        virtual void ApplyEvent(const AbilityMiss<Entity> &event) { }
+    };
 
-        public:
-            void AddHandler(const Handler<Entity, Attribute> &handler);
+    template<class Entity, class Config>
+    class Bus
+    {
+    private:
+        std::vector<const Handler<Entity, Config> *> handlers { };
 
-            void RemoveHandler(const Handler<Entity, Attribute> &handler);
+    public:
+        void AddHandler(const Handler<Entity, Config> &handler);
 
-            template<class T>
-            T PublishEvent(T &event) const;
-        };
-    }
+        void RemoveHandler(const Handler<Entity, Config> &handler);
+
+        template<class T>
+        T PublishEvent(T &event) const;
+    };
 }

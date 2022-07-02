@@ -7,6 +7,7 @@
 
 namespace Combat
 {
+    template<class Entity>
     class Attribute
     {
     private:
@@ -14,7 +15,7 @@ namespace Combat
         float percent = 1;
         float cache = 0;
 
-        std::vector<Modifier> modifiers { };
+        std::vector<Modifier<Entity>> modifiers { };
 
     public:
         const std::string name;
@@ -22,12 +23,12 @@ namespace Combat
         explicit Attribute(std::string &&name);
 
     public:
-        inline float GetValue() const;
+        [[nodiscard]] float GetValue() const;
 
-        inline const std::vector<Modifier> &ViewModifiers() const;
+        [[nodiscard]] const std::vector<Modifier<Entity>> &ViewModifiers() const;
 
-        void AddModifier(const Modifier &modifier);
+        void AddModifier(const Modifier<Entity> &modifier);
 
-        void RemoveModifier(const Modifier &modifier);
+        void RemoveModifier(const Modifier<Entity> &modifier);
     };
 }

@@ -2,22 +2,26 @@
 
 using namespace Combat;
 
-Value::Value(const Source &source, float base)
+template<class Entity>
+Value<Entity>::Value(Source<Entity> source, float base)
         : source { source }, base { base }
 {
 }
 
-inline float Value::ComputeValue() const
+template<class Entity>
+float Value<Entity>::ComputeValue() const
 {
     return base * percent + flat;
 }
 
-inline const std::vector<Modifier> &Value::ViewModifiers() const
+template<class Entity>
+const std::vector<Modifier<Entity>> &Value<Entity>::ViewModifiers() const
 {
     return modifiers;
 }
 
-void Value::AddModifier(const Modifier &modifier)
+template<class Entity>
+void Value<Entity>::AddModifier(const Modifier<Entity> &modifier)
 {
     percent += modifier.percent;
     flat += modifier.flat;

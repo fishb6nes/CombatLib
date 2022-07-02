@@ -7,25 +7,26 @@
 
 namespace Combat
 {
+    template<class Entity>
     class Value
     {
     private:
         float percent = 1;
         float flat = 0;
 
-        std::vector<Modifier> modifiers { };
+        std::vector<Modifier<Entity>> modifiers { };
 
     public:
-        const Source source;
+        const Source<Entity> source;
         const float base;
 
-        Value(const Source &source, float base);
+        Value(Source<Entity> source, float base);
 
     public:
-        inline float ComputeValue() const;
+        [[nodiscard]] float ComputeValue() const;
 
-        inline const std::vector<Modifier> &ViewModifiers() const;
+        [[nodiscard]] const std::vector<Modifier<Entity>> &ViewModifiers() const;
 
-        void AddModifier(const Modifier &modifier);
+        void AddModifier(const Modifier<Entity> &modifier);
     };
 }

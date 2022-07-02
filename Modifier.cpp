@@ -2,17 +2,20 @@
 
 using namespace Combat;
 
-Modifier Modifier::Flat(Source source, float modifier)
+template<class Entity>
+Modifier<Entity> Modifier<Entity>::Flat(Source<Entity> source, float modifier)
 {
-    return { std::move(source), modifier, 0 };
+    return { source, modifier, 0 };
 }
 
-Modifier Modifier::Percent(Source source, float modifier)
+template<class Entity>
+Modifier<Entity> Modifier<Entity>::Percent(Source<Entity> source, float modifier)
 {
-    return { std::move(source), 0, modifier };
+    return { source, 0, modifier };
 }
 
-bool Modifier::operator==(const Modifier &other) const
+template<class Entity>
+bool Modifier<Entity>::operator==(const Modifier<Entity> &other) const
 {
     return flat == other.flat && percent == other.percent && source == other.source;
 }

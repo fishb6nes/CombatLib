@@ -2,12 +2,14 @@
 
 using namespace Combat;
 
-Source::Source(const std::string &&name, int id)
-        : name { std::make_shared<const std::string>(name) }, id { id }
+template<class Entity>
+Source<Entity>::Source(const Entity *caster, const std::string &name)
+        : caster { caster }, name { &name }
 {
 }
 
-bool Source::operator==(const Source &other) const
+template<class Entity>
+bool Source<Entity>::operator==(const Source<Entity> &other) const
 {
-    return id == other.id && name == other.name;
+    return caster == other.caster && name == other.name;
 }

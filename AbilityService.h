@@ -7,23 +7,20 @@
 
 #include "Ability.h"
 
-namespace Combat
+namespace Combat::Ability
 {
-    namespace Ability
+    template<class Entity, class Config>
+    class Service
     {
-        template<class Entity, class Attribute>
-        class Service
-        {
-        private:
-            const Event::Bus<Entity, Attribute> &eventBus;
+    private:
+        const Event::Bus<Entity, Config> &eventBus;
 
-        public:
-            explicit Service(const Event::Bus<Entity, Attribute> &eventBus);
+    public:
+        explicit Service(const Event::Bus<Entity, Config> &eventBus);
 
-        public:
-            Snapshot *PublishPreCastEvent(std::string *ability, Entity *caster) const;
+    public:
+        Snapshot<Entity> *PublishPreCastEvent(const std::string &ability, const Entity &caster) const;
 
-            bool PublishHitEvents(std::string ability, const Entity &caster, const Entity &target) const;
-        };
-    }
+        bool PublishHitEvents(const std::string &ability, const Entity &caster, const Entity &target) const;
+    };
 }

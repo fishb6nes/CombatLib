@@ -4,22 +4,26 @@
 
 using namespace Combat;
 
-Attribute::Attribute(std::string &&name)
+template<class Entity>
+Attribute<Entity>::Attribute(std::string &&name)
         : name { name }
 {
 }
 
-inline float Attribute::GetValue() const
+template<class Entity>
+float Attribute<Entity>::GetValue() const
 {
     return cache;
 }
 
-inline const std::vector<Modifier> &Attribute::ViewModifiers() const
+template<class Entity>
+const std::vector<Modifier<Entity>> &Attribute<Entity>::ViewModifiers() const
 {
     return modifiers;
 }
 
-void Attribute::AddModifier(const Modifier &modifier)
+template<class Entity>
+void Attribute<Entity>::AddModifier(const Modifier<Entity> &modifier)
 {
     flat += modifier.flat;
     percent += modifier.percent;
@@ -28,7 +32,8 @@ void Attribute::AddModifier(const Modifier &modifier)
     modifiers.push_back(modifier);
 }
 
-void Attribute::RemoveModifier(const Modifier &modifier)
+template<class Entity>
+void Attribute<Entity>::RemoveModifier(const Modifier<Entity> &modifier)
 {
     auto predicate = [modifier](auto it) { return it == modifier; };
     auto index = std::find_if(modifiers.begin(), modifiers.end(), predicate);

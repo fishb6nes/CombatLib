@@ -3,22 +3,22 @@
 using namespace Combat;
 using namespace Combat::Ability;
 
-template<class Entity, class Attribute>
-Service<Entity, Attribute>::Service(const Event::Bus<Entity, Attribute> &eventBus)
+template<class Entity, class Config>
+Service<Entity, Config>::Service(const Event::Bus<Entity, Config> &eventBus)
         : eventBus { eventBus }
 {
 }
 
-template<class Entity, class Attribute>
-Snapshot *Service<Entity, Attribute>::PublishPreCastEvent(
-        std::string *const ability, Entity *const caster) const
+template<class Entity, class Config>
+Snapshot<Entity> *Service<Entity, Config>::PublishPreCastEvent(
+        const std::string &ability, const Entity &caster) const
 {
-    Event::AbilityPreCast<Entity, Attribute> event { ability, caster };
-    event = eventBus.PublishEvent(event);
-    event = caster.status.PublishEvent(event);
-    if (event.isExplicitlyAllowed || !event.isCancelled)
+    Event::AbilityPreCast<Entity, Config> event {{ }, ability, caster };
+    eventBus.PublishEvent(event);
+    caster.status.PublishEvent(event);
+    if (event.IsAllowed())
     {
-        Source source { std::move(event.ability), caster.id };
+        Source source { &caster, event.ability };
         // val modifiers = preCastEvent.modifiers
         // new AbilitySnapshot(source, config, modifiers) |> Some.apply
         return nullptr;
@@ -26,28 +26,28 @@ Snapshot *Service<Entity, Attribute>::PublishPreCastEvent(
     return nullptr;
 }
 
-template<class Entity, class Attribute>
-bool Service<Entity, Attribute>::PublishHitEvents(
-        std::string ability, const Entity &caster, const Entity &target) const
+template<class Entity, class Config>
+bool Service<Entity, Config>::PublishHitEvents(
+        const std::string &ability, const Entity &caster, const Entity &target) const
 {
-    Event::AbilityPreHit<Entity, Attribute> preEvent { std::move(ability), caster, target };
-    preEvent = caster.status.PublishEvent(preEvent);
-    preEvent = target.status.PublishEvent(preEvent);
-    preEvent = eventBus.PublishEvent(preEvent);
-    if (preEvent.isExplicitlyAllowed || !preEvent.isCancelled)
+    Event::AbilityPreHit<Entity, Config> preEvent {{ }, ability, caster, target };
+    caster.status.PublishEvent(preEvent);
+    target.status.PublishEvent(preEvent);
+    eventBus.PublishEvent(preEvent);
+    if (preEvent.IsAllowed())
     {
-        Event::AbilityHit<Entity> event { std::move(preEvent.ability), caster, target };
-        event = caster.status.PublishEvent(event);
-        event = target.status.PublishEvent(event);
-        eventBus.PublishEvent(event);
+        Event::AbilityHit<Entity> hitEvent { preEvent.ability, caster, target };
+        caster.status.PublishEvent(hitEvent);
+        target.status.PublishEvent(hitEvent);
+        eventBus.PublishEvent(hitEvent);
         return true;
     }
     else
     {
-        Event::AbilityMiss<Entity> event { std::move(preEvent.ability), caster, target };
-        event = caster.status.PublishEvent(event);
-        event = target.status.PublishEvent(event);
-        eventBus.PublishEvent(event);
+        Event::AbilityMiss<Entity> missEvent { preEvent.ability, caster, target };
+        caster.status.PublishEvent(missEvent);
+        target.status.PublishEvent(missEvent);
+        eventBus.PublishEvent(missEvent);
         return false;
     }
 }

@@ -1,17 +1,17 @@
 #pragma once
 
-#include <memory>
 #include <string>
 
 namespace Combat
 {
+    template<class Entity>
     struct Source
     {
-        std::shared_ptr<const std::string> name;
-        int id;
+        const Entity *caster;
+        const std::string *name;
 
-        Source(const std::string &&name, int id);
+        Source(const Entity *caster, const std::string &name);
 
-        bool operator==(const Source &other) const;
+        bool operator==(const Source<Entity> &other) const;
     };
 }
