@@ -5,13 +5,19 @@
 namespace Combat
 {
     template<class Entity>
-    struct Source
+    class Source
     {
-        const Entity *caster;
-        const std::string *name;
+    private:
+        Entity *caster;
+        std::string name;
 
-        Source(const Entity *caster, const std::string &name);
+    public:
+        Source(const Entity *caster, std::string name);
 
         bool operator==(const Source<Entity> &other) const;
+
+        inline const Entity *GetCaster() const { return caster; }
+
+        inline const std::string &GetName() const { return name; }
     };
 }

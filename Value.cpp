@@ -4,7 +4,7 @@ using namespace Combat;
 
 template<class Entity>
 Value<Entity>::Value(Source<Entity> source, float base)
-        : source { source }, base { base }
+        : source { source }, modifiers { }, base { base }, percent { 1 }, flat { 0 }
 {
 }
 
@@ -12,12 +12,6 @@ template<class Entity>
 float Value<Entity>::ComputeValue() const
 {
     return base * percent + flat;
-}
-
-template<class Entity>
-const std::vector<Modifier<Entity>> &Value<Entity>::ViewModifiers() const
-{
-    return modifiers;
 }
 
 template<class Entity>

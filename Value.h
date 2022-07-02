@@ -11,21 +11,24 @@ namespace Combat
     class Value
     {
     private:
-        float percent = 1;
-        float flat = 0;
+        Source<Entity> source;
+        std::vector<Modifier<Entity>> modifiers;
 
-        std::vector<Modifier<Entity>> modifiers { };
+        float base;
+        float percent;
+        float flat;
 
     public:
-        const Source<Entity> source;
-        const float base;
-
         Value(Source<Entity> source, float base);
 
-    public:
-        [[nodiscard]] float ComputeValue() const;
+        inline Source<Entity> GetSource() const { return source; }
 
-        [[nodiscard]] const std::vector<Modifier<Entity>> &ViewModifiers() const;
+        inline const std::vector<Modifier<Entity>> &GetModifiers() const { return modifiers; }
+
+        inline float GetBase() const { return base; }
+
+    public:
+        float ComputeValue() const;
 
         void AddModifier(const Modifier<Entity> &modifier);
     };

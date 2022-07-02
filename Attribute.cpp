@@ -1,25 +1,14 @@
 #include <algorithm>
+#include <utility>
 
 #include "Attribute.h"
 
 using namespace Combat;
 
 template<class Entity>
-Attribute<Entity>::Attribute(std::string &&name)
-        : name { name }
+Attribute<Entity>::Attribute(std::string name)
+        : name { std::move(name) }, modifiers { }, flat { 0 }, percent { 1 }, cache { 0 }
 {
-}
-
-template<class Entity>
-float Attribute<Entity>::GetValue() const
-{
-    return cache;
-}
-
-template<class Entity>
-const std::vector<Modifier<Entity>> &Attribute<Entity>::ViewModifiers() const
-{
-    return modifiers;
 }
 
 template<class Entity>

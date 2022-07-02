@@ -1,10 +1,12 @@
+#include <utility>
+
 #include "Source.h"
 
 using namespace Combat;
 
 template<class Entity>
-Source<Entity>::Source(const Entity *caster, const std::string &name)
-        : caster { caster }, name { &name }
+Source<Entity>::Source(const Entity *caster, std::string name)
+        : caster { caster }, name { std::move(name) }
 {
 }
 

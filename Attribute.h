@@ -11,22 +11,23 @@ namespace Combat
     class Attribute
     {
     private:
-        float flat = 0;
-        float percent = 1;
-        float cache = 0;
+        std::string name;
+        std::vector<Modifier<Entity>> modifiers;
 
-        std::vector<Modifier<Entity>> modifiers { };
-
-    public:
-        const std::string name;
-
-        explicit Attribute(std::string &&name);
+        float flat;
+        float percent;
+        float cache;
 
     public:
-        [[nodiscard]] float GetValue() const;
+        explicit Attribute(std::string name);
 
-        [[nodiscard]] const std::vector<Modifier<Entity>> &ViewModifiers() const;
+        inline const std::string &GetName() const { return name; }
 
+        inline const std::vector<Modifier<Entity>> &GetModifiers() const { return modifiers; }
+
+        inline float GetValue() const { return cache; }
+
+    public:
         void AddModifier(const Modifier<Entity> &modifier);
 
         void RemoveModifier(const Modifier<Entity> &modifier);
