@@ -3,17 +3,17 @@
 using namespace Combat;
 using namespace Combat::Ability;
 
-template<class Entity, class Config>
-Service<Entity, Config>::Service(const Event::Bus<Entity, Config> &eventBus)
+template<class AbilityAttribute, class Entity>
+Service<AbilityAttribute, Entity>::Service(const Event::Bus<AbilityAttribute, Entity> &eventBus)
         : eventBus { eventBus }
 {
 }
 
-template<class Entity, class Config>
-Snapshot<Entity> *Service<Entity, Config>::PublishPreCastEvent(
+template<class AbilityAttribute, class Entity>
+Snapshot<Entity> *Service<AbilityAttribute, Entity>::PublishPreCastEvent(
         const std::string &ability, const Entity &caster) const
 {
-    Event::AbilityPreCast<Entity, Config> event {{ }, ability, caster };
+    Event::AbilityPreCast<AbilityAttribute, Entity> event {{ }, ability, caster };
     eventBus.PublishEvent(event);
     caster.status.PublishEvent(event);
     if (event.IsAllowed())
@@ -23,14 +23,14 @@ Snapshot<Entity> *Service<Entity, Config>::PublishPreCastEvent(
         // new AbilitySnapshot(source, config, modifiers) |> Some.apply
         return nullptr;
     }
-    return nullptr;
+    else return nullptr;
 }
 
-template<class Entity, class Config>
-bool Service<Entity, Config>::PublishHitEvents(
+template<class AbilityAttribute, class Entity>
+bool Service<AbilityAttribute, Entity>::PublishHitEvents(
         const std::string &ability, const Entity &caster, const Entity &target) const
 {
-    Event::AbilityPreHit<Entity, Config> preEvent {{ }, ability, caster, target };
+    Event::AbilityPreHit<AbilityAttribute, Entity> preEvent {{ }, ability, caster, target };
     caster.status.PublishEvent(preEvent);
     target.status.PublishEvent(preEvent);
     eventBus.PublishEvent(preEvent);

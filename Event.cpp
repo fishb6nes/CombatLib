@@ -4,21 +4,15 @@
 
 using namespace Combat::Event;
 
-template<class Entity, class Config>
-bool PreBase<Entity, Config>::IsAllowed()
+template<class AbilityAttribute, class Entity>
+void PreBase<AbilityAttribute, Entity>::AddModifier(AbilityAttribute attribute, Modifier<Entity> modifier)
 {
-    return isExplicitlyAllowed || !isCancelled;
-}
-
-template<class Entity, class Config>
-void PreBase<Entity, Config>::AddModifier(Config config, Modifier<Entity> modifier)
-{
-    auto it = modifiers.find(config);
+    auto it = modifiers.find(attribute);
     if (it == modifiers.end())
     {
         std::vector<Modifier<Entity>> configModifiers { };
         configModifiers.push_back(modifier);
-        modifiers[config] = configModifiers;
+        modifiers[attribute] = configModifiers;
     }
     else
     {
@@ -26,23 +20,23 @@ void PreBase<Entity, Config>::AddModifier(Config config, Modifier<Entity> modifi
     }
 }
 
-template<class Entity, class Config>
-void Bus<Entity, Config>::AddHandler(const Handler<Entity, Config> &handler)
+template<class AbilityAttribute, class Entity>
+void Bus<AbilityAttribute, Entity>::AddHandler(const Handler<AbilityAttribute, Entity> &handler)
 {
     handlers.push_back(&handler);
 }
 
-template<class Entity, class Config>
-void Bus<Entity, Config>::RemoveHandler(const Handler<Entity, Config> &handler)
+template<class AbilityAttribute, class Entity>
+void Bus<AbilityAttribute, Entity>::RemoveHandler(const Handler<AbilityAttribute, Entity> &handler)
 {
     auto predicate = [handler](auto it) { return it == &handler; };
     auto index = std::find_if(handlers.begin(), handlers.end(), predicate);
     handlers.erase(index);
 }
 
-template<class Entity, class Config>
+template<class AbilityAttribute, class Entity>
 template<class T>
-T Bus<Entity, Config>::PublishEvent(T &event) const
+T Bus<AbilityAttribute, Entity>::PublishEvent(T &event) const
 {
     for (auto &handler : handlers)
     {

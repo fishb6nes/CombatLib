@@ -9,14 +9,14 @@
 
 namespace Combat::Ability
 {
-    template<class Entity, class Config>
+    template<class AbilityAttribute, class Entity>
     class Service
     {
     private:
-        const Event::Bus<Entity, Config> &eventBus;
+        const Event::Bus<AbilityAttribute, Entity> &eventBus;
 
     public:
-        explicit Service(const Event::Bus<Entity, Config> &eventBus);
+        explicit Service(const Event::Bus<AbilityAttribute, Entity> &eventBus);
 
     public:
         Snapshot<Entity> *PublishPreCastEvent(const std::string &ability, const Entity &caster) const;
