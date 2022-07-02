@@ -1,23 +1,24 @@
 #pragma once
 
-#include <string>
-
 namespace Combat
 {
-    template<class Entity>
-    class Source
+    namespace Event
     {
-    private:
-        Entity *caster;
-        std::string name;
+        class Bus;
+    }
 
-    public:
-        Source(const Entity *caster, std::string name);
+    struct Source
+    {
+        int type;
+        void *object;
+        Event::Bus *status;
 
-        bool operator==(const Source<Entity> &other) const;
+        Source(int type, void *object, Event::Bus *status)
+                : type { type }, object { object }, status { status } { }
 
-        inline const Entity *GetCaster() const { return caster; }
-
-        inline const std::string &GetName() const { return name; }
+        inline bool operator==(const Source &other) const
+        {
+            return type == other.type && object == other.object;
+        }
     };
 }

@@ -13,11 +13,10 @@ namespace Combat::Ability
 
     };
 
-    template<class Entity>
     class Snapshot
     {
     public:
-        const std::map<int, std::vector<Modifier<Entity>>> modifiers;
+        const std::multimap<int, Modifier> modifiers;
     };
 
     template<class Entity>
@@ -39,10 +38,10 @@ namespace Combat::Ability
         {
         public:
             virtual std::unique_ptr<Targeted> Create(
-                    const Entity &caster, Snapshot<Entity> snapshot, Entity target) = 0;
+                    const Entity &caster, Snapshot snapshot, Entity target) = 0;
 
             virtual std::unique_ptr<Targeted> Create(
-                    const Entity &caster, Snapshot<Entity> snapshot, Location target) = 0;
+                    const Entity &caster, Snapshot snapshot, Location target) = 0;
         };
     };
 
@@ -58,7 +57,7 @@ namespace Combat::Ability
         class Factory
         {
         public:
-            virtual std::unique_ptr<Targetless> Create(const Entity &caster, Snapshot<Entity> snapshot) = 0;
+            virtual std::unique_ptr<Targetless> Create(const Entity &caster, Snapshot snapshot) = 0;
         };
     };
 
@@ -70,7 +69,7 @@ namespace Combat::Ability
         {
         public:
             virtual std::unique_ptr<Child> Create(
-                    const ParentAbility &parent, Snapshot<Entity> snapshot, ChildData data) = 0;
+                    const ParentAbility &parent, Snapshot snapshot, ChildData data) = 0;
         };
     };
 }

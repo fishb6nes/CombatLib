@@ -3,33 +3,39 @@
 #include <vector>
 
 #include "Modifier.h"
-#include "Source.h"
 
 namespace Combat
 {
-    template<class Entity>
     class Value
     {
     private:
-        Source<Entity> source;
-        std::vector<Modifier<Entity>> modifiers;
+        Source source;
+        std::vector<Modifier> modifiers { };
 
         float base;
-        float percent;
-        float flat;
+        float percent = 1;
+        float flat = 0;
+        float cache = 0;
 
     public:
-        Value(Source<Entity> source, float base);
+        Value(Source source, float base) : source { source }, base { base } { }
 
-        inline Source<Entity> GetSource() const { return source; }
+        inline Source GetSource() const { return source; }
 
-        inline const std::vector<Modifier<Entity>> &GetModifiers() const { return modifiers; }
+        inline const std::vector<Modifier> &GetModifiers() const { return modifiers; }
 
         inline float GetBase() const { return base; }
 
-    public:
-        float ComputeValue() const;
+        inline float GetValue() const { return cache; }
 
-        void AddModifier(const Modifier<Entity> &modifier);
+    public:
+        void AddModifier(const Modifier &modifier)
+        {
+            percent += modifier.percent;
+            flat += modifier.flat;
+            cache = base * percent + flat;
+
+            modifiers.push_back(modifier);
+        }
     };
 }

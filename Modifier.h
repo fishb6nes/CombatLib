@@ -4,19 +4,21 @@
 
 namespace Combat
 {
-    template<class Entity>
     struct Modifier
     {
-        Source<Entity> source;
+        Source source;
         float flat;
         float percent;
 
         Modifier() = delete;
 
-        static Modifier<Entity> Flat(Source<Entity> source, float modifier);
+        inline static Modifier Flat(Source source, float modifier) { return { source, modifier, 0 }; }
 
-        static Modifier<Entity> Percent(Source<Entity> source, float modifier);
+        inline static Modifier Percent(Source source, float modifier) { return { source, 0, modifier }; }
 
-        bool operator==(const Modifier<Entity> &other) const;
+        inline bool operator==(const Modifier &other) const
+        {
+            return source == other.source && flat == other.flat && percent == other.percent;
+        }
     };
 }
