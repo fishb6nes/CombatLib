@@ -6,18 +6,18 @@ namespace Combat
 {
     struct Modifier
     {
-        Source source;
+        Source *source;
         float flat;
         float percent;
 
         Modifier() = delete;
 
-        inline static Modifier Flat(Source source, float modifier)
+        inline static Modifier Flat(Source *source, float modifier)
         {
             return { source, modifier, 0 };
         }
 
-        inline static Modifier Percent(Source source, float modifier)
+        inline static Modifier Percent(Source *source, float modifier)
         {
             return { source, 0, modifier };
         }

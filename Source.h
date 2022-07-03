@@ -1,29 +1,25 @@
 #pragma once
 
+#include <string>
+#include <utility>
+
 namespace Combat
 {
-    namespace Event
+    class Source
     {
-        class Bus;
-    }
-
-    struct Source
-    {
+    private:
         int type;
-        void *object;
-        Event::Bus *status;
+        std::string name;
+        Source *parent;
 
-        Source(int type, void *object, Event::Bus *status)
-                : type { type }, object { object }, status { status } { }
+    public:
+        Source(int type, std::string name, Source *parent = nullptr)
+                : type { type }, name { std::move(name) }, parent { parent } { }
 
-        inline bool operator==(const Source &other) const
-        {
-            return type == other.type && object == other.object;
-        }
+        inline int GetCombatType() const { return type; }
 
-        inline bool operator<(const Source &other) const
-        {
-            return type < other.type || object < other.object;
-        }
+        inline const std::string &GetCombatName() const { return name; }
+
+        inline Source *GetCombatParent() const { return parent; }
     };
 }

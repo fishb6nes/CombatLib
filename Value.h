@@ -9,7 +9,7 @@ namespace Combat
     class Value
     {
     private:
-        Source source;
+        Source *source;
         std::vector<Modifier> modifiers { };
 
         float base;
@@ -18,10 +18,10 @@ namespace Combat
         float cache = 0;
 
     public:
-        Value(Source source, float base)
+        Value(Source *source, float base)
                 : source { source }, base { base } { }
 
-        inline Source GetSource() const { return source; }
+        inline Source *GetSource() const { return source; }
 
         inline const std::vector<Modifier> &GetModifiers() const { return modifiers; }
 

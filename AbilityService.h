@@ -4,6 +4,7 @@
 
 #include "Ability.h"
 #include "Event.h"
+#include "Status.h"
 
 namespace Combat::Ability
 {
@@ -17,8 +18,10 @@ namespace Combat::Ability
                 : eventBus { eventBus } { }
 
     public:
-        std::unique_ptr<Snapshot> PublishPreCastEvent(const std::string &ability, const Source &caster) const;
+        std::unique_ptr<Snapshot> PublishPreCastEvent(
+                const std::string &ability, Status::Affectable *caster) const;
 
-        bool PublishHitEvents(const std::string &ability, const Source &caster, const Source &target) const;
+        bool PublishHitEvents(
+                const std::string &ability, Status::Affectable *caster, Status::Affectable *target) const;
     };
 }
