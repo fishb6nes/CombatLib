@@ -1,9 +1,8 @@
 #pragma once
 
-#include <algorithm>
+#include <set>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "Modifier.h"
 
@@ -13,7 +12,7 @@ namespace Combat
     {
     private:
         std::string name;
-        std::vector<Modifier> modifiers { };
+        std::set<Modifier> modifiers { };
 
         float flat = 0;
         float percent = 1;
@@ -24,31 +23,28 @@ namespace Combat
 
         inline const std::string &GetName() const { return name; }
 
-        inline const std::vector<Modifier> &GetModifiers() const { return modifiers; }
+        inline const std::set<Modifier> &GetModifiers() const { return modifiers; }
 
         inline float GetValue() const { return cache; }
 
     public:
         void AddModifier(const Modifier &modifier)
         {
-            flat += modifier.flat;
-            percent += modifier.percent;
-            cache = flat * percent;
-
-            modifiers.push_back(modifier);
+            if (modifiers.insert(modifier).second)
+            {
+                flat += modifier.flat;
+                percent += modifier.percent;
+                cache = flat * percent;
+            }
         }
 
         void RemoveModifier(const Modifier &modifier)
         {
-            auto predicate = [modifier](auto it) { return it == modifier; };
-            auto index = std::find_if(modifiers.begin(), modifiers.end(), predicate);
-            if (index != modifiers.end())
+            if (modifiers.erase(modifier))
             {
                 flat -= modifier.flat;
                 percent -= modifier.percent;
                 cache = flat * percent;
-
-                modifiers.erase(index);
             }
         }
     };

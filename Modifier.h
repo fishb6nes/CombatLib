@@ -20,5 +20,10 @@ namespace Combat
         {
             return source == other.source && flat == other.flat && percent == other.percent;
         }
+
+        inline bool operator<(const Modifier &other) const
+        {
+            return source < other.source || flat < other.flat || percent < other.percent;
+        }
     };
 }

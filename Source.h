@@ -20,5 +20,10 @@ namespace Combat
         {
             return type == other.type && object == other.object;
         }
+
+        inline bool operator<(const Source &other) const
+        {
+            return type < other.type || object < other.object;
+        }
     };
 }
