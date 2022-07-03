@@ -2,6 +2,7 @@
 
 #include <map>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "Modifier.h"
@@ -15,8 +16,12 @@ namespace Combat::Ability
 
     class Snapshot
     {
+    private:
+        std::multimap<int, Modifier> modifiers;
+
     public:
-        const std::multimap<int, Modifier> modifiers;
+        explicit Snapshot(std::multimap<int, Modifier> modifiers)
+                : modifiers { std::move(modifiers) } { }
     };
 
     template<class Entity>

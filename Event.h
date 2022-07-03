@@ -11,11 +11,14 @@ namespace Combat::Event
         bool isCancelled = false;
         bool isExplicitlyAllowed = false;
 
-        inline bool IsAllowed() const { return isExplicitlyAllowed || !isCancelled; }
-
         void AddModifier(int type, Modifier modifier)
         {
             modifiers.insert(std::pair(type, modifier));
+        }
+
+        inline bool IsAllowed() const
+        {
+            return isExplicitlyAllowed || !isCancelled;
         }
     };
 

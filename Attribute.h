@@ -19,7 +19,8 @@ namespace Combat
         float cache = 0;
 
     public:
-        explicit Attribute(std::string name) : name { std::move(name) } { }
+        explicit Attribute(std::string name)
+                : name { std::move(name) } { }
 
         inline const std::string &GetName() const { return name; }
 

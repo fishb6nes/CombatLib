@@ -12,9 +12,15 @@ namespace Combat
 
         Modifier() = delete;
 
-        inline static Modifier Flat(Source source, float modifier) { return { source, modifier, 0 }; }
+        inline static Modifier Flat(Source source, float modifier)
+        {
+            return { source, modifier, 0 };
+        }
 
-        inline static Modifier Percent(Source source, float modifier) { return { source, 0, modifier }; }
+        inline static Modifier Percent(Source source, float modifier)
+        {
+            return { source, 0, modifier };
+        }
 
         inline bool operator==(const Modifier &other) const
         {

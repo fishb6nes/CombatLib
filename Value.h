@@ -18,7 +18,8 @@ namespace Combat
         float cache = 0;
 
     public:
-        Value(Source source, float base) : source { source }, base { base } { }
+        Value(Source source, float base)
+                : source { source }, base { base } { }
 
         inline Source GetSource() const { return source; }
 

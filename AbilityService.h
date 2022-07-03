@@ -13,10 +13,11 @@ namespace Combat::Ability
         const Event::Bus &eventBus;
 
     public:
-        explicit Service(const Event::Bus &eventBus) : eventBus { eventBus } { }
+        explicit Service(const Event::Bus &eventBus)
+                : eventBus { eventBus } { }
 
     public:
-        Snapshot *PublishPreCastEvent(const std::string &ability, const Source &caster) const;
+        std::unique_ptr<Snapshot> PublishPreCastEvent(const std::string &ability, const Source &caster) const;
 
         bool PublishHitEvents(const std::string &ability, const Source &caster, const Source &target) const;
     };

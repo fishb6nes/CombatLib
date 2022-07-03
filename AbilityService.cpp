@@ -6,27 +6,22 @@
 
 using namespace Combat::Ability;
 
-Snapshot *Service::PublishPreCastEvent(const std::string &ability, const Source &caster) const
+std::unique_ptr<Snapshot> Service::PublishPreCastEvent(const std::string &ability, const Source &caster) const
 {
-    assert(caster.status != nullptr);
+    assert(caster.status != nullptr && "Combat::Source with null status cannot cast abilities");
 
     Event::AbilityPreCast event {{ }, ability, caster };
     eventBus.PublishEvent(event);
     caster.status->PublishEvent(event);
-    if (event.IsAllowed())
-    {
-        // Source source { &caster, event.ability };
-        // val modifiers = preCastEvent.modifiers
-        // new AbilitySnapshot(source, config, modifiers) |> Some.apply
-        return nullptr;
-    }
-    else return nullptr;
+    return event.IsAllowed()
+           ? std::make_unique<Snapshot>(std::move(event.modifiers))
+           : nullptr;
 }
 
 bool Service::PublishHitEvents(const std::string &ability, const Source &caster, const Source &target) const
 {
-    assert(caster.status != nullptr);
-    assert(target.status != nullptr);
+    assert(caster.status != nullptr && "Combat::Source with null status cannot cast abilities");
+    assert(target.status != nullptr && "Combat::Source with null status cannot be targeted by abilities");
 
     Event::AbilityPreHit preEvent {{ }, ability, caster, target };
     caster.status->PublishEvent(preEvent);
