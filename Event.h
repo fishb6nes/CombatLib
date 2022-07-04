@@ -1,24 +1,26 @@
 #pragma once
 
 #include <algorithm>
+#include <map>
+#include <memory>
 #include <vector>
 
 namespace Combat::Event
 {
-    struct PreBase
+    struct Cancellable
     {
-        std::multimap<int, Modifier> modifiers { };
         bool isCancelled = false;
         bool isExplicitlyAllowed = false;
-
-        void AddModifier(int type, Modifier modifier)
-        {
-            modifiers.insert(std::pair(type, modifier));
-        }
+        std::map<int, std::vector<Modifier>> modifiers { };
 
         inline bool IsAllowed() const
         {
             return isExplicitlyAllowed || !isCancelled;
+        }
+
+        void AddModifier(int type, Modifier modifier)
+        {
+            modifiers[type].push_back(modifier);
         }
     };
 

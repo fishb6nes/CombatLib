@@ -8,7 +8,7 @@
 
 namespace Combat::Event
 {
-    struct AbilityPreCast : public PreBase
+    struct AbilityPreCast : public Cancellable
     {
         std::string ability;
         Source *caster;
@@ -20,7 +20,7 @@ namespace Combat::Event
         Source *caster;
     };
 
-    struct AbilityPreHit : public PreBase
+    struct AbilityPreHit : public Cancellable
     {
         std::string ability;
         Source *caster;

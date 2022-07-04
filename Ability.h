@@ -17,10 +17,10 @@ namespace Combat::Ability
     class Snapshot
     {
     private:
-        std::multimap<int, Modifier> modifiers;
+        std::map<int, std::vector<Modifier>> modifiers;
 
     public:
-        explicit Snapshot(std::multimap<int, Modifier> modifiers)
+        explicit Snapshot(std::map<int, std::vector<Modifier>> modifiers)
                 : modifiers { std::move(modifiers) } { }
     };
 
