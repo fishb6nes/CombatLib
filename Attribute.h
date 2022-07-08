@@ -1,8 +1,7 @@
 #pragma once
 
 #include <set>
-#include <string>
-#include <utility>
+#include <string_view>
 
 #include "Modifier.h"
 
@@ -11,7 +10,7 @@ namespace Combat
     class Attribute
     {
     private:
-        std::string name;
+        std::string_view name;
         std::set<Modifier> modifiers { };
 
         float flat = 0;
@@ -19,10 +18,10 @@ namespace Combat
         float cache = 0;
 
     public:
-        explicit Attribute(std::string name)
-                : name { std::move(name) } { }
+        explicit Attribute(std::string_view name)
+                : name { name } { }
 
-        inline const std::string &GetName() const { return name; }
+        inline std::string_view GetName() const { return name; }
 
         inline const std::set<Modifier> &GetModifiers() const { return modifiers; }
 

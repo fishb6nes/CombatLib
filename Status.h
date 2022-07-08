@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string_view>
+
 #include "Event.h"
 
 namespace Combat::Status
@@ -7,8 +9,8 @@ namespace Combat::Status
     class Effect : public Source, Event::Handler
     {
     public:
-        Effect(int type, std::string name, Source *parent)
-                : Source(type, std::move(name), parent) { }
+        Effect(int type, std::string_view name, Source *parent)
+                : Source(type, name, parent) { }
     };
 
     class Affectable : public Source
@@ -17,9 +19,9 @@ namespace Combat::Status
         Event::Bus status { };
 
     public:
-        Affectable(int type, std::string name, Source *parent)
-                : Source(type, std::move(name), parent) { }
+        Affectable(int type, std::string_view name, Source *parent)
+                : Source(type, name, parent) { }
 
-        inline Event::Bus &GetStatus() { return status; }
+        inline Event::Bus &GetCombatStatus() { return status; }
     };
 }

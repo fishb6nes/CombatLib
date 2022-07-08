@@ -27,7 +27,7 @@ namespace Combat
 
         inline float GetBase() const { return base; }
 
-        inline float GetValue() const { return cache; }
+        inline float GetModified() const { return cache; }
 
     public:
         void AddModifier(const Modifier &modifier)

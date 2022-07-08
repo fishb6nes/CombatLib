@@ -10,8 +10,6 @@ namespace Combat
         float flat;
         float percent;
 
-        Modifier() = delete;
-
         inline static Modifier Flat(Source *source, float modifier)
         {
             return { source, modifier, 0 };

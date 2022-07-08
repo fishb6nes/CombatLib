@@ -6,21 +6,14 @@
 
 namespace Combat::Event
 {
-    struct Cancellable
+    class Cancellable
     {
+    public:
         bool isCancelled = false;
         bool isExplicitlyAllowed = false;
         std::map<int, std::vector<Modifier>> modifiers { };
 
-        inline bool IsAllowed() const
-        {
-            return isExplicitlyAllowed || !isCancelled;
-        }
-
-        void AddModifier(int type, Modifier modifier)
-        {
-            modifiers[type].push_back(modifier);
-        }
+        inline bool IsAllowed() const { return !isCancelled || isExplicitlyAllowed; }
     };
 
     class Handler

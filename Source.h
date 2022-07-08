@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <utility>
+#include <string_view>
 
 namespace Combat
 {
@@ -9,16 +8,16 @@ namespace Combat
     {
     private:
         int type;
-        std::string name;
+        std::string_view name;
         Source *parent;
 
     public:
-        Source(int type, std::string name, Source *parent = nullptr)
-                : type { type }, name { std::move(name) }, parent { parent } { }
+        Source(int type, std::string_view name, Source *parent = nullptr)
+                : type { type }, name { name }, parent { parent } { }
 
         inline int GetCombatType() const { return type; }
 
-        inline const std::string &GetCombatName() const { return name; }
+        inline std::string_view GetCombatName() const { return name; }
 
         inline Source *GetCombatParent() const { return parent; }
     };

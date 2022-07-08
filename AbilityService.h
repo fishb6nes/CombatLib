@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
 #include "Ability.h"
 #include "Event.h"
@@ -19,9 +19,9 @@ namespace Combat::Ability
 
     public:
         std::unique_ptr<Snapshot> PublishPreCastEvent(
-                const std::string &ability, Status::Affectable *caster) const;
+                std::string_view ability, Status::Affectable *caster) const;
 
         bool PublishHitEvents(
-                const std::string &ability, Status::Affectable *caster, Status::Affectable *target) const;
+                std::string_view ability, Status::Affectable *caster, Status::Affectable *target) const;
     };
 }
