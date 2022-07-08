@@ -1,39 +1,38 @@
 #pragma once
 
-#include <map>
 #include <string_view>
 
 #include "Event.h"
 
 namespace Combat::Event
 {
-    struct AbilityPreCast : Cancellable
+    struct AbilityPreCast : PreBase
     {
         std::string_view ability;
         Source *caster;
     };
 
-    struct AbilityCast
+    struct AbilityCast : Base
     {
         std::string_view ability;
         Source *caster;
     };
 
-    struct AbilityPreHit : Cancellable
-    {
-        std::string_view ability;
-        Source *caster;
-        Source *target;
-    };
-
-    struct AbilityHit
+    struct AbilityPreHit : PreBase
     {
         std::string_view ability;
         Source *caster;
         Source *target;
     };
 
-    struct AbilityMiss
+    struct AbilityHit : Base
+    {
+        std::string_view ability;
+        Source *caster;
+        Source *target;
+    };
+
+    struct AbilityMiss : Base
     {
         std::string_view ability;
         Source *caster;

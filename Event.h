@@ -7,7 +7,12 @@
 
 namespace Combat::Event
 {
-    class Cancellable
+    class Base
+    {
+
+    };
+
+    class PreBase
     {
     public:
         bool isCancelled = false;
@@ -18,33 +23,26 @@ namespace Combat::Event
     };
 
     template<class Event>
-    class PreHandler
-    {
-    public:
-        virtual void ApplyPreEvent(Event &event) { }
-    };
-
-    template<class Event>
     class Handler
     {
     public:
         virtual void ApplyEvent(const Event &event) { }
     };
 
+    template<class Event>
+    class PreHandler
+    {
+    public:
+        virtual void ApplyPreEvent(Event &event) { }
+    };
+
     class Bus
     {
     private:
-        std::map<std::type_index, std::vector<void *>> preHandlers { };
         std::map<std::type_index, std::vector<void *>> handlers { };
+        std::map<std::type_index, std::vector<void *>> preHandlers { };
 
     public:
-        template<class Event>
-        void AddPreHandler(PreHandler<Event> *handler)
-        {
-            auto it = static_cast<void *>(handler);
-            preHandlers[typeid(Event)].push_back(it);
-        }
-
         template<class Event>
         void AddHandler(Handler<Event> *handler)
         {
@@ -53,10 +51,10 @@ namespace Combat::Event
         }
 
         template<class Event>
-        void RemovePreHandler(PreHandler<Event> *handler)
+        void AddPreHandler(PreHandler<Event> *handler)
         {
-            auto from = preHandlers[typeid(Event)];
-            Remove(from, handler);
+            auto it = static_cast<void *>(handler);
+            preHandlers[typeid(Event)].push_back(it);
         }
 
         template<class Event>
@@ -67,22 +65,33 @@ namespace Combat::Event
         }
 
         template<class Event>
-        void PublishPreEvent(Event &event)
+        void RemovePreHandler(PreHandler<Event> *handler)
         {
-            for (void *handler : preHandlers[typeid(Event)])
-            {
-                auto it = static_cast<PreHandler<Event> *>(handler);
-                it->ApplyPreEvent(event);
-            }
+            auto from = preHandlers[typeid(Event)];
+            Remove(from, handler);
         }
 
         template<class Event>
         void PublishEvent(const Event &event)
         {
+            auto _ = static_cast<Base>(event); // template type constraint hack
+
             for (void *handler : handlers[typeid(Event)])
             {
                 auto it = static_cast<Handler<Event> *>(handler);
                 it->ApplyEvent(event);
+            }
+        }
+
+        template<class Event>
+        void PublishPreEvent(Event &event)
+        {
+            auto _ = static_cast<PreBase>(event); // template type constraint hack
+
+            for (void *handler : preHandlers[typeid(Event)])
+            {
+                auto it = static_cast<PreHandler<Event> *>(handler);
+                it->ApplyPreEvent(event);
             }
         }
 

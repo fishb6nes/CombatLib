@@ -9,7 +9,7 @@ std::unique_ptr<Snapshot> Service::PublishPreCastEvent(
 {
     Event::AbilityPreCast event {{ }, ability, caster };
     eventBus.PublishPreEvent(event);
-    caster->GetCombatStatus().PublishEvent(event);
+    caster->GetCombatStatus().PublishPreEvent(event);
     return event.IsAllowed()
            ? std::make_unique<Snapshot>(std::move(event.modifiers))
            : nullptr;
@@ -19,12 +19,12 @@ bool Service::PublishHitEvents(
         std::string_view ability, Status::Affectable *caster, Status::Affectable *target) const
 {
     Event::AbilityPreHit preEvent {{ }, ability, caster, target };
-    caster->GetCombatStatus().PublishEvent(preEvent);
-    target->GetCombatStatus().PublishEvent(preEvent);
-    eventBus.PublishEvent(preEvent);
+    caster->GetCombatStatus().PublishPreEvent(preEvent);
+    target->GetCombatStatus().PublishPreEvent(preEvent);
+    eventBus.PublishPreEvent(preEvent);
     if (preEvent.IsAllowed())
     {
-        Event::AbilityHit hitEvent { preEvent.ability, caster, target };
+        Event::AbilityHit hitEvent {{ }, ability, caster, target };
         caster->GetCombatStatus().PublishEvent(hitEvent);
         target->GetCombatStatus().PublishEvent(hitEvent);
         eventBus.PublishEvent(hitEvent);
@@ -32,7 +32,7 @@ bool Service::PublishHitEvents(
     }
     else
     {
-        Event::AbilityMiss missEvent { preEvent.ability, caster, target };
+        Event::AbilityMiss missEvent {{ }, ability, caster, target };
         caster->GetCombatStatus().PublishEvent(missEvent);
         target->GetCombatStatus().PublishEvent(missEvent);
         eventBus.PublishEvent(missEvent);
