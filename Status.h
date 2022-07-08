@@ -6,7 +6,7 @@
 
 namespace Combat::Status
 {
-    class Effect : public Source, Event::Handler
+    class Effect : public Source
     {
     public:
         Effect(int type, std::string_view name, Source *parent)

@@ -8,7 +8,7 @@ std::unique_ptr<Snapshot> Service::PublishPreCastEvent(
         std::string_view ability, Status::Affectable *caster) const
 {
     Event::AbilityPreCast event {{ }, ability, caster };
-    eventBus.PublishEvent(event);
+    eventBus.PublishPreEvent(event);
     caster->GetCombatStatus().PublishEvent(event);
     return event.IsAllowed()
            ? std::make_unique<Snapshot>(std::move(event.modifiers))

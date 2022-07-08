@@ -11,10 +11,10 @@ namespace Combat::Ability
     class Service
     {
     private:
-        const Event::Bus &eventBus;
+        Event::Bus &eventBus;
 
     public:
-        explicit Service(const Event::Bus &eventBus)
+        explicit Service(Event::Bus &eventBus)
                 : eventBus { eventBus } { }
 
     public:
