@@ -8,35 +8,51 @@ namespace Combat
 {
     class Value
     {
+    public:
+        typedef std::pair<const std::vector<Modifier> &, const std::vector<Modifier> &> Modifiers;
+
     private:
         Source *source;
-        std::vector<Modifier> modifiers { };
-
         float base;
-        float percent = 1;
-        float flat = 0;
-        float cache = 0;
+        const std::vector<Modifier> &baseModifiers;
+        std::vector<Modifier> modifiers;
+
+        float percent;
+        float flat;
+        float cache;
 
     public:
-        Value(Source *source, float base)
-                : source { source }, base { base } { }
+        Value(Source *source, float base, const std::vector<Modifier> &modifiers = { })
+                : source { source }, base { base }, baseModifiers { modifiers }, modifiers { },
+                  percent { 1 }, flat { 0 }, cache { 0 }
+        {
+            for (auto modifier : modifiers)
+            {
+                UpdateCache(modifier);
+            }
+        }
 
         inline Source *GetSource() const { return source; }
 
-        inline const std::vector<Modifier> &GetModifiers() const { return modifiers; }
-
         inline float GetBase() const { return base; }
+
+        inline Modifiers GetModifiers() const { return std::make_pair(baseModifiers, modifiers); }
 
         inline float GetModified() const { return cache; }
 
     public:
-        void AddModifier(const Modifier &modifier)
+        void AddModifier(Modifier modifier)
+        {
+            UpdateCache(modifier);
+            modifiers.push_back(modifier);
+        }
+
+    private:
+        void UpdateCache(Modifier modifier)
         {
             percent += modifier.percent;
             flat += modifier.flat;
             cache = base * percent + flat;
-
-            modifiers.push_back(modifier);
         }
     };
 }
