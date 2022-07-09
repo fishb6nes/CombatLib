@@ -61,14 +61,18 @@ namespace Combat::Event
         void RemoveHandler(Handler<Event> *handler)
         {
             auto from = handlers[typeid(Event)];
-            Remove(from, handler);
+            auto predicate = [handler](auto it) { return it == handler; };
+            auto index = std::find_if(from.begin(), from.end(), predicate);
+            from.erase(index);
         }
 
         template<class Event>
         void RemovePreHandler(PreHandler<Event> *handler)
         {
             auto from = preHandlers[typeid(Event)];
-            Remove(from, handler);
+            auto predicate = [handler](auto it) { return it == handler; };
+            auto index = std::find_if(from.begin(), from.end(), predicate);
+            from.erase(index);
         }
 
         template<class Event>
@@ -93,14 +97,6 @@ namespace Combat::Event
                 auto it = static_cast<PreHandler<Event> *>(handler);
                 it->ApplyPreEvent(event);
             }
-        }
-
-    private:
-        static void Remove(std::vector<void *> &from, void *handler)
-        {
-            auto predicate = [handler](auto it) { return it == handler; };
-            auto index = std::find_if(from.begin(), from.end(), predicate);
-            from.erase(index);
         }
     };
 }
