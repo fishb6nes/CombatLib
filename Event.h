@@ -21,16 +21,14 @@ namespace Combat::Event
     };
 
     template<class Event>
-    class Handler
+    struct Handler
     {
-    public:
         virtual void ApplyEvent(const Event &event) { }
     };
 
     template<class Event>
-    class PreHandler
+    struct PreHandler
     {
-    public:
         virtual void ApplyPreEvent(Event &event) { }
     };
 
@@ -42,21 +40,21 @@ namespace Combat::Event
 
     public:
         template<class Event>
-        void AddHandler(Handler<Event> *handler)
+        void AddHandler(Handler<Event> &handler)
         {
             auto it = static_cast<void *>(handler);
             handlers[typeid(Event)].push_back(it);
         }
 
         template<class Event>
-        void AddPreHandler(PreHandler<Event> *handler)
+        void AddPreHandler(PreHandler<Event> &handler)
         {
             auto it = static_cast<void *>(handler);
             preHandlers[typeid(Event)].push_back(it);
         }
 
         template<class Event>
-        void RemoveHandler(Handler<Event> *handler)
+        void RemoveHandler(Handler<Event> &handler)
         {
             auto from = handlers[typeid(Event)];
             auto predicate = [handler](auto it) { return it == handler; };
@@ -65,7 +63,7 @@ namespace Combat::Event
         }
 
         template<class Event>
-        void RemovePreHandler(PreHandler<Event> *handler)
+        void RemovePreHandler(PreHandler<Event> &handler)
         {
             auto from = preHandlers[typeid(Event)];
             auto predicate = [handler](auto it) { return it == handler; };
@@ -76,7 +74,7 @@ namespace Combat::Event
         template<class Event>
         void PublishEvent(const Event &event)
         {
-            auto _ = static_cast<Base>(event); // template type constraint hack
+            static_assert(std::is_base_of<Base, Event>::value, "Publish event must derive from Base");
 
             for (void *handler : handlers[typeid(Event)])
             {
@@ -88,7 +86,7 @@ namespace Combat::Event
         template<class Event>
         void PublishPreEvent(Event &event)
         {
-            auto _ = static_cast<PreBase>(event); // template type constraint hack
+            static_assert(std::is_base_of<PreBase, Event>::value, "Published event must derive from PreBase");
 
             for (void *handler : preHandlers[typeid(Event)])
             {
