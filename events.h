@@ -6,36 +6,28 @@
 
 namespace Combat::Event
 {
-    struct AbilityPreCast : PreBase
+    struct AbilityPreCast : public PreBase
     {
-        std::string_view ability;
-        Source *caster;
+
     };
 
-    struct AbilityCast : Base
+    struct AbilityCast : public Base
     {
-        std::string_view ability;
-        Source *caster;
+
     };
 
-    struct AbilityPreHit : PreBase
+    struct AbilityPreHit : public PreBase
     {
-        std::string_view ability;
-        Source *caster;
-        Source *target;
+
     };
 
-    struct AbilityHit : Base
+    struct AbilityHit : public Base
     {
-        std::string_view ability;
-        Source *caster;
-        Source *target;
+
     };
 
-    struct AbilityMiss : Base
+    struct AbilityMiss : public Base
     {
-        std::string_view ability;
-        Source *caster;
-        Source *target;
+
     };
 }

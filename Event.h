@@ -5,98 +5,129 @@
 #include <typeindex>
 #include <vector>
 
-namespace Combat::Event
+namespace Combat
 {
-    class Base
+    namespace Ability
     {
+        class Snapshot;
+    }
 
-    };
-
-    class PreBase
+    namespace Event
     {
-    public:
-        bool isCancelled = false;
-        bool isExplicitlyAllowed = false;
-        std::map<int, std::vector<Modifier>> modifiers { };
+        typedef std::map<int, std::vector<Modifier>> Modifiers;
 
-        inline bool IsAllowed() const { return !isCancelled || isExplicitlyAllowed; }
-    };
-
-    template<class Event>
-    class Handler
-    {
-    public:
-        virtual void ApplyEvent(const Event &event) { }
-    };
-
-    template<class Event>
-    class PreHandler
-    {
-    public:
-        virtual void ApplyPreEvent(Event &event) { }
-    };
-
-    class Bus
-    {
-    private:
-        std::map<std::type_index, std::vector<void *>> handlers { };
-        std::map<std::type_index, std::vector<void *>> preHandlers { };
-
-    public:
-        template<class Event>
-        void AddHandler(Handler<Event> *handler)
+        class Base
         {
-            auto it = static_cast<void *>(handler);
-            handlers[typeid(Event)].push_back(it);
-        }
+        public:
+            const Ability::Snapshot &snapshot;
 
-        template<class Event>
-        void AddPreHandler(PreHandler<Event> *handler)
+        public:
+            Base(const Ability::Snapshot &snapshot)
+                    : snapshot { snapshot } { }
+        };
+
+        class PreBase
         {
-            auto it = static_cast<void *>(handler);
-            preHandlers[typeid(Event)].push_back(it);
-        }
+            friend class Ability::Service;
 
-        template<class Event>
-        void RemoveHandler(Handler<Event> *handler)
-        {
-            auto from = handlers[typeid(Event)];
-            auto predicate = [handler](auto it) { return it == handler; };
-            auto index = std::find_if(from.begin(), from.end(), predicate);
-            from.erase(index);
-        }
+        public:
+            const Ability::Snapshot &snapshot;
+            bool cancelled = false;
+            bool explicitlyAllowed = false;
 
-        template<class Event>
-        void RemovePreHandler(PreHandler<Event> *handler)
-        {
-            auto from = preHandlers[typeid(Event)];
-            auto predicate = [handler](auto it) { return it == handler; };
-            auto index = std::find_if(from.begin(), from.end(), predicate);
-            from.erase(index);
-        }
+        private:
+            Modifiers modifiers { };
 
-        template<class Event>
-        void PublishEvent(const Event &event)
-        {
-            auto _ = static_cast<Base>(event); // template type constraint hack
+        public:
+            PreBase(const Ability::Snapshot &snapshot)
+                    : snapshot { snapshot } { }
 
-            for (void *handler : handlers[typeid(Event)])
+            inline bool IsAllowed() const { return !cancelled || explicitlyAllowed; }
+
+            inline const Modifiers &GetModifiers() const { return modifiers; }
+
+            void AddModifier(int type, Modifier modifier)
             {
-                auto it = static_cast<Handler<Event> *>(handler);
-                it->ApplyEvent(event);
+                modifiers[type].push_back(modifier);
             }
-        }
+        };
 
         template<class Event>
-        void PublishPreEvent(Event &event)
+        class Handler
         {
-            auto _ = static_cast<PreBase>(event); // template type constraint hack
+        public:
+            virtual void ApplyEvent(const Event &event) { }
+        };
 
-            for (void *handler : preHandlers[typeid(Event)])
+        template<class Event>
+        class PreHandler
+        {
+        public:
+            virtual void ApplyPreEvent(Event &event) { }
+        };
+
+        class Bus
+        {
+        private:
+            std::map<std::type_index, std::vector<void *>> handlers { };
+            std::map<std::type_index, std::vector<void *>> preHandlers { };
+
+        public:
+            template<class Event>
+            void AddHandler(Handler<Event> *handler)
             {
-                auto it = static_cast<PreHandler<Event> *>(handler);
-                it->ApplyPreEvent(event);
+                auto it = static_cast<void *>(handler);
+                handlers[typeid(Event)].push_back(it);
             }
-        }
-    };
+
+            template<class Event>
+            void AddPreHandler(PreHandler<Event> *handler)
+            {
+                auto it = static_cast<void *>(handler);
+                preHandlers[typeid(Event)].push_back(it);
+            }
+
+            template<class Event>
+            void RemoveHandler(Handler<Event> *handler)
+            {
+                auto from = handlers[typeid(Event)];
+                auto predicate = [handler](auto it) { return it == handler; };
+                auto index = std::find_if(from.begin(), from.end(), predicate);
+                from.erase(index);
+            }
+
+            template<class Event>
+            void RemovePreHandler(PreHandler<Event> *handler)
+            {
+                auto from = preHandlers[typeid(Event)];
+                auto predicate = [handler](auto it) { return it == handler; };
+                auto index = std::find_if(from.begin(), from.end(), predicate);
+                from.erase(index);
+            }
+
+            template<class Event>
+            void PublishEvent(const Event &event)
+            {
+                auto _ = static_cast<Base>(event); // template type constraint hack
+
+                for (void *handler : handlers[typeid(Event)])
+                {
+                    auto it = static_cast<Handler<Event> *>(handler);
+                    it->ApplyEvent(event);
+                }
+            }
+
+            template<class Event>
+            void PublishPreEvent(Event &event)
+            {
+                auto _ = static_cast<PreBase>(event); // template type constraint hack
+
+                for (void *handler : preHandlers[typeid(Event)])
+                {
+                    auto it = static_cast<PreHandler<Event> *>(handler);
+                    it->ApplyPreEvent(event);
+                }
+            }
+        };
+    }
 }

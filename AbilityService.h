@@ -18,10 +18,8 @@ namespace Combat::Ability
                 : eventBus { eventBus } { }
 
     public:
-        std::unique_ptr<Snapshot> PublishPreCastEvent(
-                std::string_view ability, Status::Affectable *caster) const;
+        bool PublishCastEvents(Ability::Snapshot &snapshot) const;
 
-        bool PublishHitEvents(
-                std::string_view ability, Status::Affectable *caster, Status::Affectable *target) const;
+        bool PublishHitEvents(const Ability::Snapshot &snapshot) const;
     };
 }
