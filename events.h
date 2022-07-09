@@ -24,7 +24,7 @@ namespace Combat
                     : PreBase { }, ability { ability }, caster { caster } { }
         };
 
-        struct AbilityCast : public Base
+        struct AbilityCast : Base
         {
             std::string_view ability;
             Status::Affectable &caster;
@@ -33,7 +33,7 @@ namespace Combat
                     : Base { }, ability { ability }, caster { caster } { }
         };
 
-        struct AbilityPreHit : public PreBase
+        struct AbilityPreHit : PreBase
         {
             std::string_view ability;
             Status::Affectable &caster;
@@ -43,7 +43,7 @@ namespace Combat
                     : PreBase { }, ability { ability }, caster { caster }, target { target } { }
         };
 
-        struct AbilityHit : public Base
+        struct AbilityHit : Base
         {
             std::string_view ability;
             Status::Affectable &caster;
@@ -53,7 +53,7 @@ namespace Combat
                     : Base { }, ability { ability }, caster { caster }, target { target } { }
         };
 
-        struct AbilityMiss : public Base
+        struct AbilityMiss : Base
         {
             std::string_view ability;
             Status::Affectable &caster;
