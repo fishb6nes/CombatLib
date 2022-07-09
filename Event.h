@@ -74,7 +74,7 @@ namespace Combat::Event
         template<class Event>
         void PublishEvent(const Event &event)
         {
-            static_assert(std::is_base_of<Base, Event>::value, "Publish event must derive from Base");
+            static_assert(std::is_base_of<Base, Event>::value, "Published event must derive from Base");
 
             for (void *handler : handlers[typeid(Event)])
             {
