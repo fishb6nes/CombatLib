@@ -14,42 +14,17 @@ namespace Combat
 
     namespace Event
     {
-        typedef std::map<int, std::vector<Modifier>> Modifiers;
-
-        class Base
+        struct Base
         {
-        public:
-            const Ability::Snapshot &snapshot;
 
-        public:
-            Base(const Ability::Snapshot &snapshot)
-                    : snapshot { snapshot } { }
         };
 
-        class PreBase
+        struct PreBase
         {
-            friend class Ability::Service;
-
-        public:
-            const Ability::Snapshot &snapshot;
             bool cancelled = false;
             bool explicitlyAllowed = false;
 
-        private:
-            Modifiers modifiers { };
-
-        public:
-            PreBase(const Ability::Snapshot &snapshot)
-                    : snapshot { snapshot } { }
-
             inline bool IsAllowed() const { return !cancelled || explicitlyAllowed; }
-
-            inline const Modifiers &GetModifiers() const { return modifiers; }
-
-            void AddModifier(int type, Modifier modifier)
-            {
-                modifiers[type].push_back(modifier);
-            }
         };
 
         template<class Event>

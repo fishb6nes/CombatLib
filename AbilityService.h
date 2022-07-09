@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <string_view>
 
 #include "Ability.h"
@@ -18,8 +19,10 @@ namespace Combat::Ability
                 : eventBus { eventBus } { }
 
     public:
-        bool PublishCastEvents(Ability::Snapshot &snapshot) const;
+        std::optional<Ability::Modifiers> PublishCastEvents(
+                std::string_view name, Status::Affectable &caster) const;
 
-        bool PublishHitEvents(const Ability::Snapshot &snapshot) const;
+        bool PublishHitEvents(
+                std::string_view name, Status::Affectable &caster, Status::Affectable &target) const;
     };
 }

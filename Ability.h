@@ -21,33 +21,13 @@ namespace Combat
         typedef std::map<Attribute, float> Config;
         typedef std::map<Attribute, std::vector<Modifier>> Modifiers;
 
-        class Snapshot
+        struct Snapshot
         {
-            friend class Service;
-
-        private:
             std::string_view name;
             const Config &config;
             Status::Affectable &caster;
             Status::Affectable *target;
             Modifiers modifiers;
-
-        public:
-            Snapshot(
-                    std::string_view name, const Config &config, Status::Affectable &caster,
-                    Status::Affectable *target, Modifiers modifiers = { })
-                    : name { name }, config { config }, caster { caster }, target { target },
-                      modifiers { std::move(modifiers) } { }
-
-            inline std::string_view GetName() const { return name; }
-
-            inline const Config &GetConfig() const { return config; }
-
-            inline Status::Affectable &GetCaster() const { return caster; }
-
-            inline Status::Affectable *GetTarget() const { return target; }
-
-            inline const Modifiers &GetModifiers() const { return modifiers; }
         };
 
         template<class Entity>
