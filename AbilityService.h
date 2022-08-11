@@ -12,10 +12,10 @@ namespace Combat
     class AbilityService
     {
     private:
-        Event::EventBus &eventBus;
+        EventBus &eventBus;
 
     public:
-        explicit AbilityService(Event::EventBus &eventBus)
+        explicit AbilityService(EventBus &eventBus)
                 : eventBus { eventBus } { }
 
     public:

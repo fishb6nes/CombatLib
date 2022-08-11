@@ -7,13 +7,13 @@ using namespace Combat;
 
 std::optional<AbilityModifiers> AbilityService::PublishCastEvents(std::string_view name, Entity &caster) const
 {
-    Event::AbilityPreCastEvent preEvent { name, caster };
+    AbilityPreCastEvent preEvent { name, caster };
     caster.GetCombatStatus().PublishPreEvent(preEvent);
     eventBus.PublishPreEvent(preEvent);
 
     if (preEvent.IsAllowed())
     {
-        Event::AbilityCastEvent event { name, caster };
+        AbilityCastEvent event { name, caster };
         caster.GetCombatStatus().PublishEvent(event);
         eventBus.PublishEvent(event);
 
@@ -24,14 +24,14 @@ std::optional<AbilityModifiers> AbilityService::PublishCastEvents(std::string_vi
 
 bool AbilityService::PublishHitEvents(std::string_view name, Entity &caster, Entity &target) const
 {
-    Event::AbilityPreHitEvent preEvent { name, caster, target };
+    AbilityPreHitEvent preEvent { name, caster, target };
     caster.GetCombatStatus().PublishPreEvent(preEvent);
     target.GetCombatStatus().PublishPreEvent(preEvent);
     eventBus.PublishPreEvent(preEvent);
 
     if (preEvent.IsAllowed())
     {
-        Event::AbilityHit hitEvent { name, caster, target };
+        AbilityHitEvent hitEvent { name, caster, target };
         caster.GetCombatStatus().PublishEvent(hitEvent);
         target.GetCombatStatus().PublishEvent(hitEvent);
         eventBus.PublishEvent(hitEvent);
@@ -40,7 +40,7 @@ bool AbilityService::PublishHitEvents(std::string_view name, Entity &caster, Ent
     }
     else
     {
-        Event::AbilityMiss missEvent { name, caster, target };
+        AbilityMissEvent missEvent { name, caster, target };
         caster.GetCombatStatus().PublishEvent(missEvent);
         target.GetCombatStatus().PublishEvent(missEvent);
         eventBus.PublishEvent(missEvent);
