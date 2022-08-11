@@ -5,7 +5,7 @@
 
 using namespace Combat;
 
-std::optional<AbilityModifiers> AbilityService::PublishCastEvents(std::string_view name, Entity &caster) const
+std::optional<Ability::Modifiers> AbilityService::PublishCastEvents(std::string_view name, Entity &caster) const
 {
     AbilityPreCastEvent preEvent { name, caster };
     caster.GetCombatStatus().PublishPreEvent(preEvent);

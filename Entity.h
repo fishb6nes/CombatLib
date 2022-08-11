@@ -27,6 +27,6 @@ namespace Combat
 
     class EntityService
     {
-        virtual std::vector<Combat::Entity> GetNearbyEntities(float3 location, float radius) = 0;
+        virtual std::vector<Entity> GetNearbyEntities(float3 location, float radius) = 0;
     };
 }

@@ -13,12 +13,13 @@ namespace Combat
 {
     class Entity;
 
-    typedef int AbilityAttribute;
-    typedef std::map<AbilityAttribute, float> AbilityConfig;
-    typedef std::map<AbilityAttribute, std::vector<Modifier>> AbilityModifiers;
-
     class Ability
     {
+    public:
+        typedef int Attribute;
+        typedef std::map<Attribute, float> Config;
+        typedef std::map<Attribute, std::vector<Modifier>> Modifiers;
+
     public:
         virtual bool OnHit(Entity &entity) = 0;
 
@@ -38,8 +39,8 @@ namespace Combat
         {
         public:
             virtual std::unique_ptr<Targeted> Create(
-                    Entity &caster, Entity &target, const AbilityConfig &config,
-                    AbilityModifiers modifiers) = 0;
+                    Entity &caster, Entity &target, const Ability::Config &config,
+                    Ability::Modifiers modifiers) = 0;
 
 //                virtual std::unique_ptr<Targeted> Create(
 //                        Entity &caster, Location &target, const AbilityConfig &config, AbilityModifiers modifiers) = 0;
@@ -59,7 +60,7 @@ namespace Combat
         {
         public:
             virtual std::unique_ptr<Targetless> Create(
-                    Entity &caster, const AbilityConfig &config, AbilityModifiers modifiers) = 0;
+                    Entity &caster, const Ability::Config &config, Ability::Modifiers modifiers) = 0;
         };
     };
 
@@ -71,8 +72,8 @@ namespace Combat
         {
         public:
             virtual std::unique_ptr<Child> Create(
-                    ParentAbility &parent, ChildData data, const AbilityConfig &config,
-                    AbilityModifiers modifiers) = 0;
+                    ParentAbility &parent, ChildData data, const Ability::Config &config,
+                    Ability::Modifiers modifiers) = 0;
         };
     };
 }

@@ -19,7 +19,7 @@ namespace Combat
                 : eventBus { eventBus } { }
 
     public:
-        std::optional<AbilityModifiers> PublishCastEvents(std::string_view name, Entity &caster) const;
+        std::optional<Ability::Modifiers> PublishCastEvents(std::string_view name, Entity &caster) const;
 
         bool PublishHitEvents(std::string_view name, Entity &caster, Entity &target) const;
     };
