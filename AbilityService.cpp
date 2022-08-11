@@ -1,12 +1,12 @@
 #include "AbilityService.h"
 
 #include "events.h"
+#include "Entity.h"
 
 using namespace Combat;
 using namespace Combat::Ability;
 
-std::optional<Ability::Modifiers> Service::PublishCastEvents(
-        std::string_view name, Status::Affectable &caster) const
+std::optional<Ability::Modifiers> Service::PublishCastEvents(std::string_view name, Entity &caster) const
 {
     Event::AbilityPreCast preEvent { name, caster };
     caster.GetCombatStatus().PublishPreEvent(preEvent);
@@ -23,8 +23,7 @@ std::optional<Ability::Modifiers> Service::PublishCastEvents(
     else return std::nullopt;
 }
 
-bool Service::PublishHitEvents(
-        std::string_view name, Status::Affectable &caster, Status::Affectable &target) const
+bool Service::PublishHitEvents(std::string_view name, Entity &caster, Entity &target) const
 {
     Event::AbilityPreHit preEvent { name, caster, target };
     caster.GetCombatStatus().PublishPreEvent(preEvent);

@@ -6,15 +6,12 @@
 #include <utility>
 #include <vector>
 
+#include "Entity.h"
 #include "Modifier.h"
-#include "Status.h"
 
 namespace Combat
 {
-    namespace Status
-    {
-        class Affectable;
-    }
+    class Entity;
 
     namespace Ability
     {
@@ -25,9 +22,9 @@ namespace Combat
         class Base
         {
         public:
-            virtual bool OnHit(Status::Affectable &entity) = 0;
+            virtual bool OnHit(Entity &entity) = 0;
 
-            virtual bool OnMiss(Status::Affectable &entity) = 0;
+            virtual bool OnMiss(Entity &entity) = 0;
         };
 
         template<class Entity, class Location>

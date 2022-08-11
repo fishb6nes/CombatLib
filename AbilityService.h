@@ -5,7 +5,7 @@
 
 #include "Ability.h"
 #include "Event.h"
-#include "Status.h"
+#include "Entity.h"
 
 namespace Combat::Ability
 {
@@ -20,9 +20,9 @@ namespace Combat::Ability
 
     public:
         std::optional<Ability::Modifiers> PublishCastEvents(
-                std::string_view name, Status::Affectable &caster) const;
+                std::string_view name, Entity &caster) const;
 
         bool PublishHitEvents(
-                std::string_view name, Status::Affectable &caster, Status::Affectable &target) const;
+                std::string_view name, Entity &caster, Entity &target) const;
     };
 }

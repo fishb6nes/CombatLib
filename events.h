@@ -7,59 +7,56 @@
 
 namespace Combat
 {
-    namespace Status
-    {
-        class Affectable;
-    }
+    class Entity;
 
     namespace Event
     {
         struct AbilityPreCast : PreBase
         {
             std::string_view ability;
-            Status::Affectable &caster;
+            Entity &caster;
             Ability::Modifiers modifiers { };
 
-            AbilityPreCast(std::string_view ability, Status::Affectable &caster)
+            AbilityPreCast(std::string_view ability, Entity &caster)
                     : PreBase { }, ability { ability }, caster { caster } { }
         };
 
         struct AbilityCast : Base
         {
             std::string_view ability;
-            Status::Affectable &caster;
+            Entity &caster;
 
-            AbilityCast(std::string_view ability, Status::Affectable &caster)
+            AbilityCast(std::string_view ability, Entity &caster)
                     : Base { }, ability { ability }, caster { caster } { }
         };
 
         struct AbilityPreHit : PreBase
         {
             std::string_view ability;
-            Status::Affectable &caster;
-            Status::Affectable &target;
+            Entity &caster;
+            Entity &target;
 
-            AbilityPreHit(std::string_view ability, Status::Affectable &caster, Status::Affectable &target)
+            AbilityPreHit(std::string_view ability, Entity &caster, Entity &target)
                     : PreBase { }, ability { ability }, caster { caster }, target { target } { }
         };
 
         struct AbilityHit : Base
         {
             std::string_view ability;
-            Status::Affectable &caster;
-            Status::Affectable &target;
+            Entity &caster;
+            Entity &target;
 
-            AbilityHit(std::string_view ability, Status::Affectable &caster, Status::Affectable &target)
+            AbilityHit(std::string_view ability, Entity &caster, Entity &target)
                     : Base { }, ability { ability }, caster { caster }, target { target } { }
         };
 
         struct AbilityMiss : Base
         {
             std::string_view ability;
-            Status::Affectable &caster;
-            Status::Affectable &target;
+            Entity &caster;
+            Entity &target;
 
-            AbilityMiss(std::string_view ability, Status::Affectable &caster, Status::Affectable &target)
+            AbilityMiss(std::string_view ability, Entity &caster, Entity &target)
                     : Base { }, ability { ability }, caster { caster }, target { target } { }
         };
     }

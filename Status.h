@@ -2,26 +2,14 @@
 
 #include <string_view>
 
-#include "Event.h"
+#include "Source.h"
 
-namespace Combat::Status
+namespace Combat
 {
-    class Effect : public Source
+    class StatusEffect : public Source
     {
     public:
-        Effect(int type, std::string_view name, Source *parent)
+        StatusEffect(int type, std::string_view name, Source *parent)
                 : Source(type, name, parent) { }
-    };
-
-    class Affectable : public Source
-    {
-    private:
-        Event::Bus status { };
-
-    public:
-        Affectable(int type, std::string_view name, Source *parent)
-                : Source(type, name, parent) { }
-
-        inline Event::Bus &GetCombatStatus() { return status; }
     };
 }
