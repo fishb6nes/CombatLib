@@ -7,22 +7,20 @@
 #include "Event.h"
 #include "Entity.h"
 
-namespace Combat::Ability
+namespace Combat
 {
-    class Service
+    class AbilityService
     {
     private:
-        Event::Bus &eventBus;
+        Event::EventBus &eventBus;
 
     public:
-        explicit Service(Event::Bus &eventBus)
+        explicit AbilityService(Event::EventBus &eventBus)
                 : eventBus { eventBus } { }
 
     public:
-        std::optional<Ability::Modifiers> PublishCastEvents(
-                std::string_view name, Entity &caster) const;
+        std::optional<AbilityModifiers> PublishCastEvents(std::string_view name, Entity &caster) const;
 
-        bool PublishHitEvents(
-                std::string_view name, Entity &caster, Entity &target) const;
+        bool PublishHitEvents(std::string_view name, Entity &caster, Entity &target) const;
     };
 }

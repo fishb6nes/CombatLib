@@ -11,7 +11,7 @@ namespace Combat
     {
     private:
         int id;
-        Event::Bus status { };
+        Event::EventBus status { };
 
     public:
         Entity(int type, std::string_view name, Source *parent, int id)
@@ -19,6 +19,6 @@ namespace Combat
 
         inline int GetCombatId() const { return id; }
 
-        inline Event::Bus &GetCombatStatus() { return status; }
+        inline Event::EventBus &GetCombatStatus() { return status; }
     };
 }

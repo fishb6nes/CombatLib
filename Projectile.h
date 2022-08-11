@@ -14,7 +14,7 @@ namespace Combat
     struct Projectile
     {
         int id;
-        Ability::Base &ability;
+        Ability &ability;
         Movement &movement;
         Hitbox &hitbox;
         std::set<int> entitiesHit;
@@ -26,15 +26,15 @@ namespace Combat
         inline static int idSequence = 0;
 
     private:
-        Ability::Service &abilityService;
+        AbilityService &abilityService;
         EntityService &entityService;
         std::map<int, Projectile> projectiles;
 
     public:
-        explicit ProjectileManager(Ability::Service &abilityService, EntityService &entityService)
+        explicit ProjectileManager(AbilityService &abilityService, EntityService &entityService)
                 : abilityService { abilityService }, entityService { entityService } { }
 
-        void CreateProjectile(Ability::Base &ability, Movement &movement, Hitbox &hitbox)
+        void CreateProjectile(Ability &ability, Movement &movement, Hitbox &hitbox)
         {
             Projectile projectile { idSequence++, ability, movement, hitbox, { }};
             projectiles.insert({ projectile.id, std::move(projectile) });
@@ -76,11 +76,11 @@ namespace Combat
                 auto entities = projectile.hitbox.GetEntityCollisions(entityService);
                 for (auto &entity : entities)
                 {
-                    if (entitiesHit.find(entity.id) != entitiesHit.end())
+                    if (entitiesHit.find(entity.GetCombatId()) != entitiesHit.end())
                     {
                         // save entity regardless of whether hit event succeeds as otherwise
                         // it'd come right back next tick and not count as a proper miss
-                        entitiesHit.insert(entity.id);
+                        entitiesHit.insert(entity.GetCombatId());
                         return abilityService.PublishHitEvents(ability.name, ability.caster, entity)
                                ? ability.OnHit(entity)
                                : ability.OnMiss(entity);

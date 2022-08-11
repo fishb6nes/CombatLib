@@ -4,17 +4,16 @@
 #include "Entity.h"
 
 using namespace Combat;
-using namespace Combat::Ability;
 
-std::optional<Ability::Modifiers> Service::PublishCastEvents(std::string_view name, Entity &caster) const
+std::optional<AbilityModifiers> AbilityService::PublishCastEvents(std::string_view name, Entity &caster) const
 {
-    Event::AbilityPreCast preEvent { name, caster };
+    Event::AbilityPreCastEvent preEvent { name, caster };
     caster.GetCombatStatus().PublishPreEvent(preEvent);
     eventBus.PublishPreEvent(preEvent);
 
     if (preEvent.IsAllowed())
     {
-        Event::AbilityCast event { name, caster };
+        Event::AbilityCastEvent event { name, caster };
         caster.GetCombatStatus().PublishEvent(event);
         eventBus.PublishEvent(event);
 
@@ -23,9 +22,9 @@ std::optional<Ability::Modifiers> Service::PublishCastEvents(std::string_view na
     else return std::nullopt;
 }
 
-bool Service::PublishHitEvents(std::string_view name, Entity &caster, Entity &target) const
+bool AbilityService::PublishHitEvents(std::string_view name, Entity &caster, Entity &target) const
 {
-    Event::AbilityPreHit preEvent { name, caster, target };
+    Event::AbilityPreHitEvent preEvent { name, caster, target };
     caster.GetCombatStatus().PublishPreEvent(preEvent);
     target.GetCombatStatus().PublishPreEvent(preEvent);
     eventBus.PublishPreEvent(preEvent);

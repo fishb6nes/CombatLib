@@ -9,55 +9,52 @@ namespace Combat
 {
     class Entity;
 
-    namespace Event
+    struct AbilityPreCastEvent : PreEvent
     {
-        struct AbilityPreCast : PreBase
-        {
-            std::string_view ability;
-            Entity &caster;
-            Ability::Modifiers modifiers { };
+        std::string_view ability;
+        Entity &caster;
+        AbilityModifiers modifiers { };
 
-            AbilityPreCast(std::string_view ability, Entity &caster)
-                    : PreBase { }, ability { ability }, caster { caster } { }
-        };
+        AbilityPreCastEvent(std::string_view ability, Entity &caster)
+                : PreEvent { }, ability { ability }, caster { caster } { }
+    };
 
-        struct AbilityCast : Base
-        {
-            std::string_view ability;
-            Entity &caster;
+    struct AbilityCastEvent : Event
+    {
+        std::string_view ability;
+        Entity &caster;
 
-            AbilityCast(std::string_view ability, Entity &caster)
-                    : Base { }, ability { ability }, caster { caster } { }
-        };
+        AbilityCastEvent(std::string_view ability, Entity &caster)
+                : Event { }, ability { ability }, caster { caster } { }
+    };
 
-        struct AbilityPreHit : PreBase
-        {
-            std::string_view ability;
-            Entity &caster;
-            Entity &target;
+    struct AbilityPreHitEvent : PreEvent
+    {
+        std::string_view ability;
+        Entity &caster;
+        Entity &target;
 
-            AbilityPreHit(std::string_view ability, Entity &caster, Entity &target)
-                    : PreBase { }, ability { ability }, caster { caster }, target { target } { }
-        };
+        AbilityPreHitEvent(std::string_view ability, Entity &caster, Entity &target)
+                : PreEvent { }, ability { ability }, caster { caster }, target { target } { }
+    };
 
-        struct AbilityHit : Base
-        {
-            std::string_view ability;
-            Entity &caster;
-            Entity &target;
+    struct AbilityHitEvent : Event
+    {
+        std::string_view ability;
+        Entity &caster;
+        Entity &target;
 
-            AbilityHit(std::string_view ability, Entity &caster, Entity &target)
-                    : Base { }, ability { ability }, caster { caster }, target { target } { }
-        };
+        AbilityHitEvent(std::string_view ability, Entity &caster, Entity &target)
+                : Event { }, ability { ability }, caster { caster }, target { target } { }
+    };
 
-        struct AbilityMiss : Base
-        {
-            std::string_view ability;
-            Entity &caster;
-            Entity &target;
+    struct AbilityMissEvent : Event
+    {
+        std::string_view ability;
+        Entity &caster;
+        Entity &target;
 
-            AbilityMiss(std::string_view ability, Entity &caster, Entity &target)
-                    : Base { }, ability { ability }, caster { caster }, target { target } { }
-        };
-    }
+        AbilityMissEvent(std::string_view ability, Entity &caster, Entity &target)
+                : Event { }, ability { ability }, caster { caster }, target { target } { }
+    };
 }

@@ -5,14 +5,14 @@
 #include <typeindex>
 #include <vector>
 
-namespace Combat::Event
+namespace Combat
 {
-    struct Base
+    struct Event
     {
 
     };
 
-    struct PreBase
+    struct PreEvent
     {
         bool cancelled = false;
         bool explicitlyAllowed = false;
@@ -21,18 +21,18 @@ namespace Combat::Event
     };
 
     template<class Event>
-    struct Handler
+    struct EventHandler
     {
         virtual void ApplyEvent(const Event &event) { }
     };
 
     template<class Event>
-    struct PreHandler
+    struct PreEventHandler
     {
         virtual void ApplyPreEvent(Event &event) { }
     };
 
-    class Bus
+    class EventBus
     {
     private:
         std::map<std::type_index, std::vector<void *>> handlers { };
@@ -40,21 +40,21 @@ namespace Combat::Event
 
     public:
         template<class Event>
-        void AddHandler(Handler<Event> &handler)
+        void AddHandler(EventHandler<Event> &handler)
         {
             auto it = static_cast<void *>(handler);
             handlers[typeid(Event)].push_back(it);
         }
 
         template<class Event>
-        void AddPreHandler(PreHandler<Event> &handler)
+        void AddPreHandler(PreEventHandler<Event> &handler)
         {
             auto it = static_cast<void *>(handler);
             preHandlers[typeid(Event)].push_back(it);
         }
 
         template<class Event>
-        void RemoveHandler(Handler<Event> &handler)
+        void RemoveHandler(EventHandler<Event> &handler)
         {
             auto from = handlers[typeid(Event)];
             auto predicate = [handler](auto it) { return it == handler; };
@@ -63,7 +63,7 @@ namespace Combat::Event
         }
 
         template<class Event>
-        void RemovePreHandler(PreHandler<Event> &handler)
+        void RemovePreHandler(PreEventHandler<Event> &handler)
         {
             auto from = preHandlers[typeid(Event)];
             auto predicate = [handler](auto it) { return it == handler; };
@@ -74,11 +74,12 @@ namespace Combat::Event
         template<class Event>
         void PublishEvent(const Event &event)
         {
-            static_assert(std::is_base_of<Base, Event>::value, "Published event must derive from Base");
+            static_assert(std::is_base_of<Event, Event>::value,
+                          "Published event must derive from Ability");
 
             for (void *handler : handlers[typeid(Event)])
             {
-                auto it = static_cast<Handler<Event> *>(handler);
+                auto it = static_cast<EventHandler<Event> *>(handler);
                 it->ApplyEvent(event);
             }
         }
@@ -86,11 +87,12 @@ namespace Combat::Event
         template<class Event>
         void PublishPreEvent(Event &event)
         {
-            static_assert(std::is_base_of<PreBase, Event>::value, "Published event must derive from PreBase");
+            static_assert(std::is_base_of<PreEvent, Event>::value,
+                          "Published event must derive from PreEvent");
 
             for (void *handler : preHandlers[typeid(Event)])
             {
-                auto it = static_cast<PreHandler<Event> *>(handler);
+                auto it = static_cast<PreEventHandler<Event> *>(handler);
                 it->ApplyPreEvent(event);
             }
         }
