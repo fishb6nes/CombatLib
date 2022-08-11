@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string_view>
+#include <vector>
 
+#include "./math.h"
 #include "Event.h"
 #include "Source.h"
 
@@ -20,5 +22,11 @@ namespace Combat
         inline int GetCombatId() const { return id; }
 
         inline EventBus &GetCombatStatus() { return status; }
+    };
+
+
+    class EntityService
+    {
+        virtual std::vector<Combat::Entity> GetNearbyEntities(float3 location, float radius) = 0;
     };
 }

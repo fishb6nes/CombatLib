@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "Entity.h"
-#include "EntityService.h"
 
 namespace Combat
 {
