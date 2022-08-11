@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Modifier.h"
+#include "Status.h"
 
 namespace Combat
 {
@@ -21,27 +22,20 @@ namespace Combat
         typedef std::map<Attribute, float> Config;
         typedef std::map<Attribute, std::vector<Modifier>> Modifiers;
 
-        struct Snapshot
-        {
-            std::string_view name;
-            const Config &config;
-            Status::Affectable &caster;
-            Status::Affectable *target;
-            Modifiers modifiers;
-        };
-
-        template<class Entity>
         class Base
         {
-            virtual bool OnHit(Entity entity) = 0;
+        public:
+            virtual bool OnHit(Status::Affectable &entity) = 0;
 
-            virtual bool OnMiss(Entity entity) = 0;
+            virtual bool OnMiss(Status::Affectable &entity) = 0;
         };
 
         template<class Entity, class Location>
-        class Targeted : public Base<Entity>
+        class Targeted : public Base
         {
         public:
+            virtual ~Targeted() = default;
+
             virtual bool OnObstacle(Location location) { return false; };
 
         public:
@@ -49,18 +43,18 @@ namespace Combat
             {
             public:
                 virtual std::unique_ptr<Targeted> Create(
-                        const Entity &caster, Snapshot snapshot, Entity target) = 0;
+                        Entity &caster, Entity &target, const Config &config, Modifiers modifiers) = 0;
 
-                virtual std::unique_ptr<Targeted> Create(
-                        const Entity &caster, Snapshot snapshot, Location target) = 0;
+//                virtual std::unique_ptr<Targeted> Create(
+//                        Entity &caster, Location &target, const Config &config, Modifiers modifiers) = 0;
             };
         };
 
         template<class Entity, class Location>
-        class Targetless : public Base<Entity>
+        class Targetless : public Base
         {
         public:
-            virtual bool OnGrounded(Location location) { return true; };
+            virtual bool OnObstacle(Location location) { return true; };
 
             virtual bool OnMaxRange(Location location) { return true; };
 
@@ -68,19 +62,20 @@ namespace Combat
             class Factory
             {
             public:
-                virtual std::unique_ptr<Targetless> Create(const Entity &caster, Snapshot snapshot) = 0;
+                virtual std::unique_ptr<Targetless> Create(
+                        Entity &caster, const Config &config, Modifiers modifiers) = 0;
             };
         };
 
-        class Child
+        template<class Entity, class ParentAbility, class ChildData>
+        class Child : public Base
         {
         public:
-            template<class Entity, class ParentAbility, class ChildData>
             class Factory
             {
             public:
                 virtual std::unique_ptr<Child> Create(
-                        const ParentAbility &parent, Snapshot snapshot, ChildData data) = 0;
+                        ParentAbility &parent, ChildData data, const Config &config, Modifiers modifiers) = 0;
             };
         };
     }
