@@ -3,17 +3,21 @@
 #include <map>
 #include <memory>
 #include <string_view>
-#include <utility>
 #include <vector>
 
+#include "./math.h"
 #include "Entity.h"
 #include "Modifier.h"
 
+#ifndef COMBAT_ABILITY_TYPE
+#define COMBAT_ABILITY_TYPE 1
+#endif
+
 namespace Combat
 {
-    class Entity;
+    class Projectile;
 
-    class Ability
+    class Ability : public Source
     {
     public:
         typedef int Attribute;
@@ -21,59 +25,16 @@ namespace Combat
         typedef std::map<Attribute, std::vector<Modifier>> Modifiers;
 
     public:
-        virtual bool OnHit(Entity &entity) = 0;
+        Ability(std::string_view name, Entity &caster, int type = COMBAT_ABILITY_TYPE)
+                : Source(type, name, &caster) { }
 
-        virtual bool OnMiss(Entity &entity) = 0;
-    };
-
-    template<class Entity, class Location>
-    class Targeted : public Ability
-    {
-    public:
-        virtual ~Targeted() = default;
-
-        virtual bool OnObstacle(Location location) { return false; };
+        inline Entity &GetCaster() const { return static_cast<Entity &>(*parent); }
 
     public:
-        class Factory
-        {
-        public:
-            virtual std::unique_ptr<Targeted> Create(
-                    Entity &caster, Entity &target, const Ability::Config &config,
-                    Ability::Modifiers modifiers) = 0;
+        virtual bool OnEntityHit(Entity &entity) = 0;
 
-//                virtual std::unique_ptr<Targeted> Create(
-//                        Entity &caster, Location &target, const AbilityConfig &config, AbilityModifiers modifiers) = 0;
-        };
-    };
+        virtual bool OnEntityMiss(Entity &entity) = 0;
 
-    template<class Entity, class Location>
-    class Targetless : public Ability
-    {
-    public:
-        virtual bool OnObstacle(Location location) { return true; };
-
-        virtual bool OnMaxRange(Location location) { return true; };
-
-    public:
-        class Factory
-        {
-        public:
-            virtual std::unique_ptr<Targetless> Create(
-                    Entity &caster, const Ability::Config &config, Ability::Modifiers modifiers) = 0;
-        };
-    };
-
-    template<class Entity, class ParentAbility, class ChildData>
-    class Child : public Ability
-    {
-    public:
-        class Factory
-        {
-        public:
-            virtual std::unique_ptr<Child> Create(
-                    ParentAbility &parent, ChildData data, const Ability::Config &config,
-                    Ability::Modifiers modifiers) = 0;
-        };
+        virtual void OnProjectileOutOfRange(Projectile &projectile) { }
     };
 }
