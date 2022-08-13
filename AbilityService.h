@@ -9,7 +9,10 @@ namespace Combat
 {
     class Entity;
     class EventBus;
+}
 
+namespace Combat
+{
     class AbilityService
     {
     private:

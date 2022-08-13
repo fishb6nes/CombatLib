@@ -6,12 +6,12 @@
 
 namespace Combat
 {
-    class Ability;
     class AbilityService;
     class EntityService;
-    class Hitbox;
-    class Movement;
+}
 
+namespace Combat
+{
     class ProjectileManager
     {
     private:

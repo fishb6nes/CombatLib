@@ -10,7 +10,10 @@ namespace Combat
     class float3;
     class Hitbox;
     class Movement;
+}
 
+namespace Combat
+{
     class Projectile
     {
     private:

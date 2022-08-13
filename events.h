@@ -8,7 +8,10 @@
 namespace Combat
 {
     class Entity;
+}
 
+namespace Combat
+{
     struct AbilityPreCastEvent : PreEvent
     {
         std::string_view ability;

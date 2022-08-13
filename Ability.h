@@ -16,7 +16,10 @@
 namespace Combat
 {
     class Projectile;
+}
 
+namespace Combat
+{
     class Ability : public Source
     {
     public:
