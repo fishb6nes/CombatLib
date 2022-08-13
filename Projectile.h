@@ -14,6 +14,9 @@ namespace Combat
     class Projectile
     {
     private:
+        inline static int idSequence = 0;
+
+    private:
         int id;
         Ability &ability;
         Movement &movement;
@@ -21,8 +24,8 @@ namespace Combat
         std::set<int> entitiesHit;
 
     public:
-        Projectile(int id, Ability &ability, Movement &movement, Hitbox &hitbox)
-                : id { id }, ability { ability }, movement { movement }, hitbox { hitbox } { }
+        Projectile(Ability &ability, Movement &movement, Hitbox &hitbox)
+                : id { idSequence++ }, ability { ability }, movement { movement }, hitbox { hitbox } { }
 
         inline int GetId() const { return id; }
 

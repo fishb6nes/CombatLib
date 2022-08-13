@@ -10,10 +10,10 @@ using namespace Combat;
 bool Projectile::Update(AbilityService &abilityService, EntityService &entityService)
 {
     bool remove = false;
-    auto origin = movement.Get();
+    float3 origin = movement.Get();
     if (movement.HasNext())
     {
-        auto target = movement.Next();
+        float3 target = movement.Next();
         remove |= TestEntityCollisions(origin, target, abilityService, entityService)
                   || TestWorldCollisions(origin, target);
     }
@@ -30,9 +30,9 @@ bool Projectile::TestEntityCollisions(float3 origin, float3 target,
 {
     bool remove = false;
     auto collisions = hitbox.GetEntityCollisions(origin, target, entityService);
-    for (Entity *ptr : collisions)
+    for (Entity *collision : collisions)
     {
-        Entity &entity = *ptr;
+        Entity &entity = *collision;
 
         if (entitiesHit.find(entity.GetCombatId()) != entitiesHit.end())
         {

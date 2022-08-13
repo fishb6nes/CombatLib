@@ -2,23 +2,21 @@
 
 using namespace Combat;
 
-Projectile &ProjectileManager::CreateProjectile(Ability &ability, Movement &movement, Hitbox &hitbox)
+void ProjectileManager::AddProjectile(Projectile *projectile)
 {
-    int id = idSequence++;
-    Projectile projectile { id, ability, movement, hitbox };
-    return projectiles.insert({ id, std::move(projectile) }).first->second;
+    projectiles.insert({ projectile, projectile });
 }
 
-void ProjectileManager::RemoveProjectile(Projectile &projectile)
+void ProjectileManager::RemoveProjectile(Projectile *projectile)
 {
-    projectiles.erase(projectile.GetId());
+    projectiles.erase(projectile);
 }
 
 void ProjectileManager::UpdateProjectiles()
 {
     for (auto it = projectiles.begin(); it != projectiles.end(); /* manual incr */)
     {
-        if (it->second.Update(abilityService, entityService))
+        if (it->second->Update(abilityService, entityService))
         {
             it = projectiles.erase(it);
         }
