@@ -1,100 +1,46 @@
 #pragma once
 
-#include <map>
 #include <set>
-#include <vector>
-
-#include "Ability.h"
-#include "AbilityService.h"
-#include "Hitbox.h"
-#include "Movement.h"
 
 namespace Combat
 {
-    struct Projectile
+    class Ability;
+    class AbilityService;
+    class EntityService;
+    class float3;
+    class Hitbox;
+    class Movement;
+
+    class Projectile
     {
+    private:
         int id;
         Ability &ability;
         Movement &movement;
         Hitbox &hitbox;
         std::set<int> entitiesHit;
-    };
-
-    class ProjectileManager
-    {
-    private:
-        inline static int idSequence = 0;
-
-    private:
-        AbilityService &abilityService;
-        EntityService &entityService;
-        std::map<int, Projectile> projectiles;
 
     public:
-        explicit ProjectileManager(AbilityService &abilityService, EntityService &entityService)
-                : abilityService { abilityService }, entityService { entityService } { }
+        Projectile(int id, Ability &ability, Movement &movement, Hitbox &hitbox)
+                : id { id }, ability { ability }, movement { movement }, hitbox { hitbox } { }
 
-        void CreateProjectile(Ability &ability, Movement &movement, Hitbox &hitbox)
-        {
-            Projectile projectile { idSequence++, ability, movement, hitbox, { }};
-            projectiles.insert({ projectile.id, std::move(projectile) });
-        }
+        inline int GetId() const { return id; }
 
-        void RemoveProjectile(int id)
-        {
-            projectiles.erase(id);
-        }
+        inline Ability &GetAbility() const { return ability; }
 
-        void UpdateProjectiles()
-        {
-            std::vector<int> removedProjectiles;
+        inline Movement &GetMovement() const { return movement; }
 
-            for (auto &[id, projectile] : projectiles)
-            {
-                if (UpdateProjectile(projectile))
-                {
-                    removedProjectiles.push_back(id);
-                }
-            }
+        inline Hitbox &GetHitbox() const { return hitbox; }
 
-            for (int id : removedProjectiles)
-            {
-                RemoveProjectile(id);
-            }
-        }
+        inline const std::set<int> &GetEntitiesHit() const { return entitiesHit; }
+
+    public:
+        bool Update(AbilityService &abilityService, EntityService &entityService);
 
     private:
-        bool UpdateProjectile(Projectile &projectile)
-        {
-            auto &[id, ability, movement, hitbox, entitiesHit] = projectile;
-            if (movement.HasNext())
-            {
-                auto origin = movement.Get();
-                auto target = movement.Next();
+        bool TestEntityCollisions(float3 origin, float3 target,
+                                  AbilityService &abilityService, EntityService &entityService);
 
-                // Entity collision
-                auto entities = projectile.hitbox.GetEntityCollisions(entityService);
-                for (auto &entity : entities)
-                {
-                    if (entitiesHit.find(entity.GetCombatId()) != entitiesHit.end())
-                    {
-                        // save entity regardless of whether hit event succeeds as otherwise
-                        // it'd come right back next tick and not count as a proper miss
-                        entitiesHit.insert(entity.GetCombatId());
-                        return abilityService.PublishHitEvents(ability.name, ability.caster, entity)
-                               ? ability.OnHit(entity)
-                               : ability.OnMiss(entity);
-                    }
-                }
-
-                // World collision
-                // TODO
-            }
-            else if (ability.OnMaxRange(movement.Get()))
-            {
-                return true;
-            }
-            else return false;
-        }
+        bool TestWorldCollisions(float3 origin, float3 target);
     };
 }
