@@ -17,20 +17,12 @@ namespace Combat
         const std::vector<Modifier> &baseModifiers;
         std::vector<Modifier> modifiers;
 
-        float percent;
-        float flat;
-        float cache;
+        float percent = 1;
+        float flat = 0;
+        float cache = 0;
 
     public:
-        Value(Source *source, float base, const std::vector<Modifier> &modifiers = { })
-                : source { source }, base { base }, baseModifiers { modifiers }, modifiers { },
-                  percent { 1 }, flat { 0 }, cache { 0 }
-        {
-            for (auto modifier : modifiers)
-            {
-                UpdateCache(modifier);
-            }
-        }
+        Value(Source *source, float base, const std::vector<Modifier> &modifiers = { });
 
         inline Source *GetSource() const { return source; }
 
@@ -41,18 +33,9 @@ namespace Combat
         inline float GetModified() const { return cache; }
 
     public:
-        void AddModifier(Modifier modifier)
-        {
-            UpdateCache(modifier);
-            modifiers.push_back(modifier);
-        }
+        void AddModifier(Modifier modifier);
 
     private:
-        void UpdateCache(Modifier modifier)
-        {
-            percent += modifier.percent;
-            flat += modifier.flat;
-            cache = base * percent + flat;
-        }
+        void UpdateCache(Modifier modifier);
     };
 }

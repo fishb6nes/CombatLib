@@ -6,7 +6,7 @@ namespace Combat
 {
     class Source
     {
-    private:
+    protected:
         int type;
         std::string_view name;
         Source *parent;

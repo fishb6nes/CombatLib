@@ -4,8 +4,12 @@
 #include <vector>
 
 #include "./math.h"
-#include "Event.h"
+#include "EventBus.h"
 #include "Source.h"
+
+#ifndef COMBAT_ENTITY_TYPE
+#define COMBAT_ENTITY_TYPE 0
+#endif
 
 namespace Combat
 {
@@ -13,17 +17,16 @@ namespace Combat
     {
     private:
         int id;
-        EventBus status { };
+        EventBus status;
 
     public:
-        Entity(int type, std::string_view name, Source *parent, int id)
-                : Source(type, name, parent), id { id } { }
+        Entity(std::string_view name, int id, int type = COMBAT_ENTITY_TYPE)
+                : Source(type, name), id { id } { }
 
         inline int GetCombatId() const { return id; }
 
         inline EventBus &GetCombatStatus() { return status; }
     };
-
 
     class EntityService
     {

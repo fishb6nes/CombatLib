@@ -13,7 +13,7 @@ namespace Combat
     {
         std::string_view ability;
         Entity &caster;
-        Ability::Modifiers modifiers { };
+        Ability::Modifiers modifiers;
 
         AbilityPreCastEvent(std::string_view ability, Entity &caster)
                 : PreEvent { }, ability { ability }, caster { caster } { }

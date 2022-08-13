@@ -11,7 +11,7 @@ namespace Combat
     {
     private:
         std::string_view name;
-        std::set<Modifier> modifiers { };
+        std::set<Modifier> modifiers;
 
         float flat = 0;
         float percent = 1;
@@ -28,24 +28,8 @@ namespace Combat
         inline float GetValue() const { return cache; }
 
     public:
-        void AddModifier(const Modifier &modifier)
-        {
-            if (modifiers.insert(modifier).second)
-            {
-                flat += modifier.flat;
-                percent += modifier.percent;
-                cache = flat * percent;
-            }
-        }
+        void AddModifier(const Modifier &modifier);
 
-        void RemoveModifier(const Modifier &modifier)
-        {
-            if (modifiers.erase(modifier))
-            {
-                flat -= modifier.flat;
-                percent -= modifier.percent;
-                cache = flat * percent;
-            }
-        }
+        void RemoveModifier(const Modifier &modifier);
     };
 }

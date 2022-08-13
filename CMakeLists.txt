@@ -5,6 +5,11 @@ project(CombatLib)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(CombatLib
-        Attribute.h Entity.h Event.h Hitbox.h Modifier.h Movement.h Projectile.h Source.h Value.h
+        Entity.h Hitbox.h Modifier.h Source.h
         Ability.h AbilityService.h AbilityService.cpp
-        events.h math.h)
+        Attribute.h Attribute.cpp
+        Event.h EventBus.h EventBus.cpp events.h
+        math.h
+        Movement.h Movement.cpp
+        Projectile.h Projectile.cpp ProjectileManager.h ProjectileManager.cpp
+        Value.h Value.cpp)
