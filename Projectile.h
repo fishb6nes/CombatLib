@@ -1,52 +1,31 @@
 #pragma once
 
+#include <memory>
 #include <set>
-
-namespace Combat
-{
-    class Ability;
-    class AbilityService;
-    class EntityService;
-    class float3;
-    class Hitbox;
-    class Movement;
-}
 
 namespace Combat
 {
     class Projectile
     {
     private:
-        inline static int idSequence = 0;
+        class AbilityService &abilityService;
 
-    private:
-        int id;
-        Ability &ability;
-        Movement &movement;
-        Hitbox &hitbox;
-        std::set<int> entitiesHit;
+        class Ability &ability;
+        class Movement &movement;
+        class Hitbox &hitbox;
 
     public:
-        Projectile(Ability &ability, Movement &movement, Hitbox &hitbox)
-                : id { idSequence++ }, ability { ability }, movement { movement }, hitbox { hitbox } { }
-
-        inline int GetId() const { return id; }
-
-        inline Ability &GetAbility() const { return ability; }
-
-        inline Movement &GetMovement() const { return movement; }
-
-        inline Hitbox &GetHitbox() const { return hitbox; }
-
-        inline const std::set<int> &GetEntitiesHit() const { return entitiesHit; }
+        Projectile(AbilityService &abilityService,
+                   Ability &ability, Movement &movement, Hitbox &hitbox)
+                : abilityService { abilityService },
+                  ability { ability }, movement { movement }, hitbox { hitbox } { }
 
     public:
-        bool Update(AbilityService &abilityService, EntityService &entityService);
+        bool Tick();
 
     private:
-        bool TestEntityCollisions(float3 origin, float3 target,
-                                  AbilityService &abilityService, EntityService &entityService);
+        bool CollideEntities(struct float3 origin, struct float3 target);
 
-        bool TestWorldCollisions(float3 origin, float3 target);
+        bool CollideWorld(struct float3 origin, struct float3 target);
     };
 }

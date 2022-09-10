@@ -7,47 +7,36 @@
 
 using namespace Combat;
 
-bool Projectile::Update(AbilityService &abilityService, EntityService &entityService)
+bool Projectile::Tick()
 {
-    bool remove = false;
     float3 origin = movement.Get();
     if (movement.HasNext())
     {
         float3 target = movement.Next();
-        remove |= TestEntityCollisions(origin, target, abilityService, entityService)
-                  || TestWorldCollisions(origin, target);
+        return CollideEntities(origin, target) || CollideWorld(origin, target);
     }
     else
     {
         ability.OnProjectileOutOfRange(*this);
-        remove = true;
+        return true;
     }
-    return remove;
 }
 
-bool Projectile::TestEntityCollisions(float3 origin, float3 target,
-                                      AbilityService &abilityService, EntityService &entityService)
+bool Projectile::CollideEntities(float3 origin, float3 target)
 {
     bool remove = false;
-    auto collisions = hitbox.GetEntityCollisions(origin, target, entityService);
+    auto collisions = hitbox.TestEntityCollisions(origin, target);
     for (Entity *collision : collisions)
     {
         Entity &entity = *collision;
-
-        if (entitiesHit.find(entity.GetCombatId()) != entitiesHit.end())
-        {
-            // save entity regardless of whether hit event succeeds as otherwise
-            // it'd come right back next tick and not count as a proper miss
-            entitiesHit.insert(entity.GetCombatId());
-            remove |= abilityService.PublishHitEvents(ability, entity)
-                      ? ability.OnEntityHit(entity)
-                      : ability.OnEntityMiss(entity);
-        }
+        remove |= abilityService.PublishHitEvents(ability, entity)
+                  ? ability.OnEntityHit(entity)
+                  : ability.OnEntityMiss(entity);
     }
     return remove;
 }
 
-bool Projectile::TestWorldCollisions(float3 origin, float3 target)
+bool Projectile::CollideWorld(float3 origin, float3 target)
 {
     return false; // TODO
 }

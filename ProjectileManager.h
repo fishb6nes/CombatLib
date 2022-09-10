@@ -1,33 +1,27 @@
 #pragma once
 
-#include <map>
+#include <memory>
+#include <vector>
 
 #include "Projectile.h"
-
-namespace Combat
-{
-    class AbilityService;
-    class EntityService;
-}
 
 namespace Combat
 {
     class ProjectileManager
     {
     private:
-        AbilityService &abilityService;
-        EntityService &entityService;
-        std::map<Projectile *, Projectile *> projectiles;
+        class AbilityService &abilityService;
+
+        std::vector<std::unique_ptr<Projectile>> projectiles;
 
     public:
-        ProjectileManager(AbilityService &abilityService, EntityService &entityService)
-                : abilityService { abilityService }, entityService { entityService } { }
+        explicit ProjectileManager(AbilityService &abilityService)
+                : abilityService { abilityService } { }
 
     public:
-        void AddProjectile(Projectile *projectile);
+        void CreateProjectile(Ability &ability, Movement &movement, Hitbox &hitbox);
 
-        void RemoveProjectile(Projectile *projectile);
-
-        void UpdateProjectiles();
+    private:
+        void TickProjectiles();
     };
 }

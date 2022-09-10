@@ -2,24 +2,17 @@
 
 using namespace Combat;
 
-void ProjectileManager::AddProjectile(Projectile *projectile)
+void ProjectileManager::CreateProjectile(Ability &ability, Movement &movement, Hitbox &hitbox)
 {
-    projectiles.insert({ projectile, projectile });
+    auto projectile = std::make_unique<Projectile>(abilityService,
+                                                   ability, movement, hitbox);
+    projectiles.push_back(std::move(projectile));
 }
 
-void ProjectileManager::RemoveProjectile(Projectile *projectile)
+void ProjectileManager::TickProjectiles()
 {
-    projectiles.erase(projectile);
-}
-
-void ProjectileManager::UpdateProjectiles()
-{
-    for (auto it = projectiles.begin(); it != projectiles.end(); /* manual incr */)
+    for (auto it = projectiles.begin(); it != projectiles.end(); /* manual */)
     {
-        if (it->second->Update(abilityService, entityService))
-        {
-            it = projectiles.erase(it);
-        }
-        else ++it;
+        it = (*it)->Tick() ? projectiles.erase(it) : ++it;
     }
 }
