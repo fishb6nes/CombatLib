@@ -21,9 +21,9 @@ namespace Combat
         virtual void ApplyEvent(const Event &event) { }
     };
 
-    template<class Event>
+    template<class PreEvent>
     struct PreEventHandler
     {
-        virtual void ApplyPreEvent(Event &event) { }
+        virtual void ApplyPreEvent(PreEvent &event) { }
     };
 }

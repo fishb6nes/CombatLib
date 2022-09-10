@@ -19,19 +19,19 @@ namespace Combat
         template<class Event>
         void AddHandler(EventHandler<Event> &handler);
 
-        template<class Event>
-        void AddPreHandler(PreEventHandler<Event> &handler);
+        template<class PreEvent>
+        void AddPreHandler(PreEventHandler<PreEvent> &handler);
 
         template<class Event>
         void RemoveHandler(EventHandler<Event> &handler);
 
-        template<class Event>
-        void RemovePreHandler(PreEventHandler<Event> &handler);
+        template<class PreEvent>
+        void RemovePreHandler(PreEventHandler<PreEvent> &handler);
 
         template<class Event>
         void PublishEvent(const Event &event);
 
-        template<class Event>
-        void PublishPreEvent(Event &event);
+        template<class PreEvent>
+        void PublishPreEvent(PreEvent &event);
     };
 }

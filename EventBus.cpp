@@ -9,11 +9,11 @@ void EventBus::AddHandler(EventHandler<Event> &handler)
     handlers[typeid(Event)].push_back(it);
 }
 
-template<class Event>
-void EventBus::AddPreHandler(PreEventHandler<Event> &handler)
+template<class PreEvent>
+void EventBus::AddPreHandler(PreEventHandler<PreEvent> &handler)
 {
     auto it = static_cast<void *>(handler);
-    preHandlers[typeid(Event)].push_back(it);
+    preHandlers[typeid(PreEvent)].push_back(it);
 }
 
 template<class Event>
@@ -25,10 +25,10 @@ void EventBus::RemoveHandler(EventHandler<Event> &handler)
     from.erase(index);
 }
 
-template<class Event>
-void EventBus::RemovePreHandler(PreEventHandler<Event> &handler)
+template<class PreEvent>
+void EventBus::RemovePreHandler(PreEventHandler<PreEvent> &handler)
 {
-    auto from = preHandlers[typeid(Event)];
+    auto from = preHandlers[typeid(PreEvent)];
     auto predicate = [handler](auto it) { return it == handler; };
     auto index = std::find_if(from.begin(), from.end(), predicate);
     from.erase(index);
@@ -47,15 +47,15 @@ void EventBus::PublishEvent(const Event &event)
     }
 }
 
-template<class Event>
-void EventBus::PublishPreEvent(Event &event)
+template<class PreEvent>
+void EventBus::PublishPreEvent(PreEvent &event)
 {
-    static_assert(std::is_base_of<PreEvent, Event>::value,
+    static_assert(std::is_base_of<PreEvent, PreEvent>::value,
                   "Published event must derive from PreEvent");
 
-    for (void *handler : preHandlers[typeid(Event)])
+    for (void *handler : preHandlers[typeid(PreEvent)])
     {
-        auto it = static_cast<PreEventHandler<Event> *>(handler);
+        auto it = static_cast<PreEventHandler<PreEvent> *>(handler);
         it->ApplyPreEvent(event);
     }
 }

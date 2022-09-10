@@ -137,14 +137,14 @@ namespace Combat
     protected:
         float3 location;
         float velocity;
-        std::function<float3()> target;
 
+        std::function<float3()> target;
         bool targetReached;
 
     public:
         HomingMovement(float3 origin, float velocity, std::function<float3()> target)
-                : location { origin }, velocity { velocity }, target { std::move(target) },
-                  targetReached { false } { }
+                : location { origin }, velocity { velocity },
+                  target { std::move(target) }, targetReached { false } { }
 
         inline float3 Get() const override { return location; }
 

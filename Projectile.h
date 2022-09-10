@@ -5,14 +5,25 @@
 
 namespace Combat
 {
+    class AbilityService;
+
+    class Ability;
+    class Movement;
+    class Hitbox;
+
+    struct float3;
+}
+
+namespace Combat
+{
     class Projectile
     {
     private:
-        class AbilityService &abilityService;
+        AbilityService &abilityService;
 
-        class Ability &ability;
-        class Movement &movement;
-        class Hitbox &hitbox;
+        Ability &ability;
+        Movement &movement;
+        Hitbox &hitbox;
 
     public:
         Projectile(AbilityService &abilityService,
@@ -24,8 +35,8 @@ namespace Combat
         bool Tick();
 
     private:
-        bool CollideEntities(struct float3 origin, struct float3 target);
+        bool CollideEntities(float3 origin, float3 target);
 
-        bool CollideWorld(struct float3 origin, struct float3 target);
+        bool CollideWorld(float3 origin, float3 target);
     };
 }

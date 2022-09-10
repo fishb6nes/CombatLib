@@ -6,6 +6,7 @@
 
 #include "./math.h"
 #include "Entity.h"
+#include "EntityService.h"
 
 namespace Combat
 {
