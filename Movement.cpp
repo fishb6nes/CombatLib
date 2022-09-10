@@ -2,6 +2,8 @@
 
 using namespace Combat;
 
+/// LinearMovement
+
 float3 LinearMovement::Next()
 {
     float distance = (location - origin).length();
@@ -20,11 +22,15 @@ float3 LinearMovement::Next()
     return location;
 }
 
+/// ProjectileMovement
+
 float3 ProjectileMovement::Next()
 {
     velocity.y -= gravity; // TODO adjust for physics update
     return LinearMovement::Next();
 }
+
+/// HomingMovement
 
 float3 HomingMovement::Next()
 {
@@ -44,43 +50,36 @@ float3 HomingMovement::Next()
     return location;
 }
 
-float AcceleratedMovement::AccelerateSpeed(float speed) const
+/// AcceleratedMovement
+
+template<class T>
+float3 AcceleratedMovement<T>::Next()
 {
-    float acceleratedSpeed = speed + acceleration;
-    if ((acceleration > 0 && acceleratedSpeed >= maxSpeed) ||
-        (acceleration < 0 && acceleratedSpeed <= maxSpeed))
-    {
-        return maxSpeed;
-    }
-    else return acceleratedSpeed;
+    movement.velocity = AccelerateVelocity(movement.velocity);
+    return movement.Next();
 }
 
-float3 AcceleratedMovement::AccelerateVelocity(float3 velocity) const
+template<class T>
+float AcceleratedMovement<T>::AccelerateVelocity(float velocity) const
+{
+    float acceleratedVelocity = velocity + acceleration;
+    if ((acceleration > 0 && acceleratedVelocity >= maxVelocity) ||
+        (acceleration < 0 && acceleratedVelocity <= maxVelocity))
+    {
+        return maxVelocity;
+    }
+    else return acceleratedVelocity;
+}
+
+template<class T>
+float3 AcceleratedMovement<T>::AccelerateVelocity(float3 velocity) const
 {
     if (acceleration != 0)
     {
         float velocityLength = velocity.length();
-        float acceleratedLength = AccelerateSpeed(velocityLength);
+        float acceleratedLength = AccelerateVelocity(velocityLength);
         float accelerationScalar = acceleratedLength / velocityLength;
         return velocity * accelerationScalar;
     }
     else return velocity;
-}
-
-float3 AcceleratedLinearMovement::Next()
-{
-    velocity = AccelerateVelocity(velocity);
-    return LinearMovement::Next();
-}
-
-float3 AcceleratedProjectileMovement::Next()
-{
-    velocity = AccelerateVelocity(velocity);
-    return ProjectileMovement::Next();
-}
-
-float3 AcceleratedHomingMovement::Next()
-{
-    velocity = AccelerateSpeed(velocity);
-    return HomingMovement::Next();
 }

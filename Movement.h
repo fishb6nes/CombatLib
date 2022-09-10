@@ -7,6 +7,11 @@
 
 namespace Combat
 {
+    /**
+     * An interface representing a certain movement in 3D space.
+     *
+     * Once `HasNext` returns false this movement reached its destination and `Next` should no longer be used.
+     */
     class Movement
     {
     public:
@@ -17,6 +22,9 @@ namespace Combat
         virtual float3 Next() = 0;
     };
 
+    /**
+     * A stationary movement that will always have a next location and always return the same location.
+     */
     class StationaryMovement : public Movement
     {
     protected:
@@ -33,6 +41,9 @@ namespace Combat
         inline float3 Next() override { return location; }
     };
 
+    /**
+     * A one-off movement that will only supply the provided location once.
+     */
     class OneOffMovement : public Movement
     {
     protected:
@@ -52,6 +63,9 @@ namespace Combat
         //@formatter:on
     };
 
+    /**
+     * A movement that follows the location supplied by `next` for as long as `hasNext` supplies true.
+     */
     class SuppliedMovement : public Movement
     {
     protected:
@@ -70,19 +84,24 @@ namespace Combat
         inline float3 Next() override { return location = next(); }
     };
 
+    /**
+     * A linear movement starting at `origin` henceforth travelling linearly following its `velocity` until
+     * reaching its `maxRange`.
+     */
     class LinearMovement : public Movement
     {
     protected:
         float3 origin;
         float3 location;
         float3 velocity;
+
         float maxRange;
         bool outOfRange;
 
     public:
         LinearMovement(float3 origin, float3 velocity, float maxRange)
-                : origin { origin }, location { origin }, velocity { velocity }, maxRange { maxRange },
-                  outOfRange { false } { }
+                : origin { origin }, location { origin }, velocity { velocity },
+                  maxRange { maxRange }, outOfRange { false } { }
 
         inline float3 Get() const override { return location; }
 
@@ -92,25 +111,34 @@ namespace Combat
         float3 Next() override;
     };
 
+    /**
+     *
+     */
     class ProjectileMovement : public LinearMovement
     {
     protected:
         float gravity;
 
     public:
-        ProjectileMovement(float3 origin, float3 velocity, float maxRange, float gravity)
-                : LinearMovement(origin, velocity, maxRange), gravity { gravity } { }
+        ProjectileMovement(float3 origin, float3 velocity, float maxRange,
+                           float gravity)
+                : LinearMovement(origin, velocity, maxRange),
+                  gravity { gravity } { }
 
     public:
         float3 Next() override;
     };
 
+    /**
+     *
+     */
     class HomingMovement : public Movement
     {
     protected:
         float3 location;
         float velocity;
         std::function<float3()> target;
+
         bool targetReached;
 
     public:
@@ -126,55 +154,28 @@ namespace Combat
         float3 Next() override;
     };
 
-    class AcceleratedMovement
+    /**
+     *
+     */
+    template<class T>
+    class AcceleratedMovement : public Movement
     {
     private:
+        T &movement;
+
         float acceleration;
-        float maxSpeed;
+        float maxVelocity;
 
     public:
-        AcceleratedMovement(float acceleration, float maxSpeed)
-                : acceleration { acceleration }, maxSpeed { maxSpeed } { }
+        AcceleratedMovement(T &movement, float acceleration, float maxVelocity)
+                : movement { movement }, acceleration { acceleration }, maxVelocity { maxVelocity } { }
 
     public:
-        float AccelerateSpeed(float speed) const;
+        float3 Next() override;
+
+    private:
+        float AccelerateVelocity(float velocity) const;
 
         float3 AccelerateVelocity(float3 velocity) const;
-    };
-
-    class AcceleratedLinearMovement : public LinearMovement, private AcceleratedMovement
-    {
-    public:
-        AcceleratedLinearMovement(float3 origin, float3 velocity, float maxRange,
-                                  float acceleration, float maxSpeed)
-                : LinearMovement(origin, velocity, maxRange),
-                  AcceleratedMovement(acceleration, maxSpeed) { }
-
-    public:
-        float3 Next() override;
-    };
-
-    class AcceleratedProjectileMovement : public ProjectileMovement, private AcceleratedMovement
-    {
-    public:
-        AcceleratedProjectileMovement(float3 origin, float3 velocity, float maxRange, float gravity,
-                                      float acceleration, float maxSpeed)
-                : ProjectileMovement(origin, velocity, maxRange, gravity),
-                  AcceleratedMovement(acceleration, maxSpeed) { }
-
-    public:
-        float3 Next() override;
-    };
-
-    class AcceleratedHomingMovement : public HomingMovement, private AcceleratedMovement
-    {
-    public:
-        AcceleratedHomingMovement(float3 origin, float velocity, std::function<float3()> target,
-                                  float acceleration, float maxSpeed)
-                : HomingMovement(origin, velocity, std::move(target)),
-                  AcceleratedMovement(acceleration, maxSpeed) { }
-
-    public:
-        float3 Next() override;
     };
 }
