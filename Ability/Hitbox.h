@@ -69,6 +69,7 @@ namespace Combat
         }
     };
 
+    // TODO remove
 //    /**
 //     * A hitbox decorator preventing entities from being collided with multiple times over multiple ticks.
 //     */

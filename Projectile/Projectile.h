@@ -16,11 +16,5 @@ namespace Combat
         Ability *ability;
         Hitbox hitbox;
         Movement movement;
-
-        static bool
-        CollideEntities(const Projectile &it, float3 origin, float3 target);
-
-        static bool
-        CollideWorld(const Projectile &it, float3 origin, float3 target);
     };
 }

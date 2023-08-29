@@ -16,7 +16,7 @@ namespace Combat
         std::vector<Projectile> projectiles;
 
     public:
-        explicit ProjectileManager(AbilityService &abilityService, EntityService &entityService)
+        ProjectileManager(AbilityService &abilityService, EntityService &entityService)
                 : abilityService { abilityService }, entityService { entityService } { }
 
     public:
