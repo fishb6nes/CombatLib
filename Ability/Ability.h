@@ -1,13 +1,10 @@
 #pragma once
 
 #include <map>
-#include <memory>
-#include <string_view>
 #include <vector>
 
-#include "./math.h"
-#include "Entity.h"
-#include "Modifier.h"
+#include "../Core/Modifier.h"
+#include "../Entity/Entity.h"
 
 #ifndef COMBAT_ABILITY_TYPE
 #define COMBAT_ABILITY_TYPE 1
@@ -31,13 +28,17 @@ namespace Combat
         Ability(std::string_view name, Entity &caster, int type = COMBAT_ABILITY_TYPE)
                 : Source(type, name, &caster) { }
 
-        inline Entity &GetCaster() const { return static_cast<Entity &>(*parent); }
+        inline Entity &
+        GetCaster() const { return static_cast<Entity &>(*parent); }
 
     public:
-        virtual bool OnEntityHit(Entity &entity) = 0;
+        virtual bool
+        OnEntityHit(const Entity &entity) = 0;
 
-        virtual bool OnEntityMiss(Entity &entity) = 0;
+        virtual bool
+        OnEntityMiss(const Entity &entity) = 0;
 
-        virtual void OnProjectileOutOfRange(Projectile &projectile) { }
+        virtual void
+        OnProjectileOutOfRange(const int &projectile) { }
     };
 }

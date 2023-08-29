@@ -1,14 +1,6 @@
 #pragma once
 
-#include <string_view>
-
-#include "Ability.h"
-#include "Event.h"
-
-namespace Combat
-{
-    class Entity;
-}
+#include "Ability/Ability.h"
 
 namespace Combat
 {
@@ -26,9 +18,10 @@ namespace Combat
     {
         std::string_view ability;
         Entity &caster;
+        Ability::Modifiers &modifiers;
 
-        AbilityCastEvent(std::string_view ability, Entity &caster)
-                : Event { }, ability { ability }, caster { caster } { }
+        AbilityCastEvent(std::string_view ability, Entity &caster, Ability::Modifiers &modifiers)
+                : Event { }, ability { ability }, caster { caster }, modifiers { modifiers } { }
     };
 
     struct AbilityPreHitEvent : PreEvent

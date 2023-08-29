@@ -1,14 +1,11 @@
 #pragma once
 
 #include <optional>
-#include <string_view>
-
-#include "Ability.h"
 
 namespace Combat
 {
+    class Ability;
     class Entity;
-    class EventBus;
 }
 
 namespace Combat
@@ -23,8 +20,10 @@ namespace Combat
                 : eventBus { eventBus } { }
 
     public:
-        std::optional<Ability::Modifiers> PublishCastEvents(std::string_view ability, Entity &caster) const;
+        std::optional<Ability::Modifiers>
+        PublishCastEvents(std::string_view ability, Entity &caster) const;
 
-        bool PublishHitEvents(Ability &ability, Entity &target) const;
+        bool
+        PublishHitEvents(Ability &ability, Entity &target) const;
     };
 }

@@ -1,15 +1,13 @@
-#include <utility>
+#include "../events.h"
+
+#include "Ability.h"
 
 #include "AbilityService.h"
 
-#include "Entity.h"
-#include "EventBus.h"
-#include "events.h"
-
 using namespace Combat;
 
-std::optional<Ability::Modifiers> AbilityService::PublishCastEvents(
-        std::string_view ability, Entity &caster) const
+std::optional<Ability::Modifiers>
+AbilityService::PublishCastEvents(std::string_view ability, Entity &caster) const
 {
     AbilityPreCastEvent preEvent { ability, caster };
     caster.GetCombatStatus().PublishPreEvent(preEvent);
@@ -17,7 +15,7 @@ std::optional<Ability::Modifiers> AbilityService::PublishCastEvents(
 
     if (preEvent.IsAllowed())
     {
-        AbilityCastEvent event { ability, caster };
+        const AbilityCastEvent event { ability, caster, preEvent.modifiers };
         caster.GetCombatStatus().PublishEvent(event);
         eventBus.PublishEvent(event);
 
@@ -26,7 +24,8 @@ std::optional<Ability::Modifiers> AbilityService::PublishCastEvents(
     else return std::nullopt;
 }
 
-bool AbilityService::PublishHitEvents(Ability &ability, Entity &target) const
+bool
+AbilityService::PublishHitEvents(Ability &ability, Entity &target) const
 {
     auto name = ability.GetCombatName();
     auto caster = ability.GetCaster();
@@ -38,7 +37,7 @@ bool AbilityService::PublishHitEvents(Ability &ability, Entity &target) const
 
     if (preEvent.IsAllowed())
     {
-        AbilityHitEvent hitEvent { name, caster, target };
+        const AbilityHitEvent hitEvent { name, caster, target };
         caster.GetCombatStatus().PublishEvent(hitEvent);
         target.GetCombatStatus().PublishEvent(hitEvent);
         eventBus.PublishEvent(hitEvent);
@@ -47,7 +46,7 @@ bool AbilityService::PublishHitEvents(Ability &ability, Entity &target) const
     }
     else
     {
-        AbilityMissEvent missEvent { name, caster, target };
+        const AbilityMissEvent missEvent { name, caster, target };
         caster.GetCombatStatus().PublishEvent(missEvent);
         target.GetCombatStatus().PublishEvent(missEvent);
         eventBus.PublishEvent(missEvent);

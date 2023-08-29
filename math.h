@@ -8,32 +8,46 @@ namespace Combat
     {
         float x, y, z;
 
-        float3 operator*(const float &scalar) const
+        float3
+        operator*(const float &scalar) const
         {
-            return { x * scalar, y * scalar, z * scalar };
+            return { x * scalar,
+                     y * scalar,
+                     z * scalar };
         }
 
-        float3 operator/(const float &scalar) const
+        float3
+        operator/(const float &scalar) const
         {
-            return { x / scalar, y / scalar, z / scalar };
+            return { x / scalar,
+                     y / scalar,
+                     z / scalar };
         }
 
-        float3 operator+(const float3 &other) const
+        float3
+        operator+(const float3 &other) const
         {
-            return { x + other.x, y + other.y, z + other.z };
+            return { x + other.x,
+                     y + other.y,
+                     z + other.z };
         }
 
-        float3 operator-(const float3 &other) const
+        float3
+        operator-(const float3 &other) const
         {
-            return { x - other.x, y - other.y, z - other.z };
+            return { x - other.x,
+                     y - other.y,
+                     z - other.z };
         }
 
-        float length() const
+        float
+        length() const
         {
             return sqrt(x * x + y * y + z * z);
         }
 
-        float3 normalized() const
+        float3
+        normalized() const
         {
             return *this / length();
         }

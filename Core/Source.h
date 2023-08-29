@@ -15,10 +15,13 @@ namespace Combat
         Source(int type, std::string_view name, Source *parent = nullptr)
                 : type { type }, name { name }, parent { parent } { }
 
-        inline int GetCombatType() const { return type; }
+        inline int
+        GetCombatType() const { return type; }
 
-        inline std::string_view GetCombatName() const { return name; }
+        inline std::string_view
+        GetCombatName() const { return name; }
 
-        inline Source *GetCombatParent() const { return parent; }
+        inline Source *
+        GetCombatParent() const { return parent; }
     };
 }
