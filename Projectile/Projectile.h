@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "../Ability/Hitbox.h"
 
 #include "Movement.h"
@@ -14,7 +16,7 @@ namespace Combat
     struct Projectile
     {
         Ability *ability;
-        Hitbox hitbox;
-        Movement movement;
+        T hitbox;
+        V movement;
     };
 }

@@ -10,10 +10,10 @@
 #define COMBAT_ABILITY_TYPE 1
 #endif
 
-namespace Combat
-{
-    class Projectile;
-}
+//namespace Combat
+//{
+//    class Projectile;
+//}
 
 namespace Combat
 {

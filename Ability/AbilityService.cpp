@@ -15,7 +15,7 @@ AbilityService::PublishCastEvents(std::string_view ability, Entity &caster) cons
 
     if (preEvent.IsAllowed())
     {
-        const AbilityCastEvent event { ability, caster, preEvent.modifiers };
+        AbilityCastEvent event { ability, caster, preEvent.modifiers };
         caster.GetCombatStatus().PublishEvent(event);
         eventBus.PublishEvent(event);
 
@@ -37,7 +37,7 @@ AbilityService::PublishHitEvents(Ability &ability, Entity &target) const
 
     if (preEvent.IsAllowed())
     {
-        const AbilityHitEvent hitEvent { name, caster, target };
+        AbilityHitEvent hitEvent { name, caster, target };
         caster.GetCombatStatus().PublishEvent(hitEvent);
         target.GetCombatStatus().PublishEvent(hitEvent);
         eventBus.PublishEvent(hitEvent);
@@ -46,7 +46,7 @@ AbilityService::PublishHitEvents(Ability &ability, Entity &target) const
     }
     else
     {
-        const AbilityMissEvent missEvent { name, caster, target };
+        AbilityMissEvent missEvent { name, caster, target };
         caster.GetCombatStatus().PublishEvent(missEvent);
         target.GetCombatStatus().PublishEvent(missEvent);
         eventBus.PublishEvent(missEvent);

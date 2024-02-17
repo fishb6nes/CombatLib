@@ -1,71 +1,68 @@
 #pragma once
 
-#include "Movement/EntityMovement.h"
-#include "Movement/LinearMovement.h"
-#include "Movement/OneOffMovement.h"
-#include "Movement/StaticMovement.h"
+#include "PxPhysicsAPI.h"
+
+using namespace physx;
+using namespace std;
 
 namespace Combat
 {
     struct Movement
     {
-        enum Type
+        enum class Type : uint8_t
         {
-            STATIC,
-            ONEOFF,
-            LINEAR,
             ENTITY,
+            LINEAR,
+            ONESHOT,
+            STATIC,
         } type;
 
-        union
+        bool hasNext;
+        PxVec3 location;
+        union { class Entity *entity; PxVec3 velocity; } data;
+
+        inline PxVec3
+        SetNext()
         {
-            float3 location;
-
-            StaticMovement _static;
-            OneOffMovement _oneoff;
-            LinearMovement _linear;
-            EntityMovement _entity;
-        };
-
-        Movement(const StaticMovement &it)
-                : type { STATIC }, _static { it } { }
-
-        Movement(const OneOffMovement &it)
-                : type { ONEOFF }, _oneoff { it } { }
-
-        Movement(const LinearMovement &it)
-                : type { LINEAR }, _linear { it } { }
-
-        Movement(const EntityMovement &it)
-                : type { ENTITY }, _entity { it } { }
-
-        operator StaticMovement() const { return _static; }
-        operator OneOffMovement() const { return _oneoff; }
-        operator LinearMovement() const { return _linear; }
-        operator EntityMovement() const { return _entity; }
-
-        static bool
-        HasNext(const Movement &it)
-        {
-            switch (it.type)
+            switch (type)
             {
-                case STATIC: return StaticMovement::HasNext(it);
-                case ONEOFF: return OneOffMovement::HasNext(it);
-                case LINEAR: return LinearMovement::HasNext(it);
-                case ENTITY: return EntityMovement::HasNext(it);
+                case Type::ENTITY:
+                {
+                    location = data.entity->GetLocation();
+                    break;
+                }
+                case Type::LINEAR:
+                {
+                    location = location + data.velocity;
+                    break;
+                }
+                default: break;
             }
+            return location;
         }
 
-        static Movement
-        SetNext(const Movement &it)
+        inline static Movement
+        Entity(Entity *entity)
         {
-            switch (it.type)
-            {
-                case STATIC: return StaticMovement::SetNext(it);
-                case ONEOFF: return OneOffMovement::SetNext(it);
-                case LINEAR: return LinearMovement::SetNext(it);
-                case ENTITY: return EntityMovement::SetNext(it);
-            }
+            return { Type::ENTITY, true, entity->GetLocation(), entity };
+        }
+
+        inline static Movement
+        Linear(PxVec3 origin, PxVec3 velocity)
+        {
+            return { Type::LINEAR, true, origin, { .velocity=velocity }};
+        }
+
+        inline static Movement
+        Oneshot(PxVec3 location)
+        {
+            return { Type::ONESHOT, false, location, nullptr };
+        }
+
+        inline static Movement
+        Static(PxVec3 location)
+        {
+            return { Type::STATIC, true, location, nullptr };
         }
     };
 }

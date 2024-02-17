@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../math.h"
-#include "../Ability/Hitbox.h"
 #include "../Core/Source.h"
 #include "../Event/EventBus.h"
 
@@ -16,12 +15,12 @@ namespace Combat
     private:
         int id;
         float3 location;
-        Hitbox hitbox;
+        sphere volume;
         EventBus status;
 
     public:
-        Entity(std::string_view name, int id, float3 location, Hitbox hitbox, int type = COMBAT_ENTITY_TYPE)
-                : Source(type, name), id { id }, location { location }, hitbox { hitbox } { }
+        Entity(std::string_view name, int id, float3 location, int type = COMBAT_ENTITY_TYPE)
+                : Source(type, name), id { id }, location { location } { }
 
         inline int
         GetCombatId() const { return id; }
@@ -29,8 +28,8 @@ namespace Combat
         inline float3
         GetLocation() const { return location; }
 
-        inline Hitbox
-        GetHitbox() const { return hitbox; }
+        inline sphere
+        GetVolume() const { return volume; }
 
         inline EventBus &
         GetCombatStatus() { return status; }
